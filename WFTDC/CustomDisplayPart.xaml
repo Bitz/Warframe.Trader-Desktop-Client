@@ -1,0 +1,27 @@
+﻿<core:NotificationDisplayPart x:Class="WFTDC.CustomDisplayPart"
+                              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                              xmlns:core="clr-namespace:ToastNotifications.Core;assembly=ToastNotifications"
+                              xmlns:local="clr-namespace:WFTDC"
+                              mc:Ignorable="d"  Background="Gray"
+                              d:DesignHeight="120" d:DesignWidth="650"
+                              d:DataContext="{d:DesignInstance local:CustomNotification, IsDesignTimeCreatable=False}" >
+    <Grid  Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Source="{Binding Image}" MaxHeight="100" MaxWidth="60" ></Image>
+        
+        <TextBlock Padding="10" Grid.Row="0" Grid.Column="1" Text="Warframe.Market" TextAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0" />
+
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Message}" Foreground="White"  TextWrapping="Wrap" />
+    </Grid>
+</core:NotificationDisplayPart>

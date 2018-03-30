@@ -1,17 +1,23 @@
-﻿namespace WFTDC
+﻿
+
+
+using System.Threading;
+
+namespace WFTDC
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
-    using System.Windows;
     using System.Windows.Forms;
-
-    using Mantin.Controls.Wpf.Notification;
+    using static System.Windows.Application;
 
     using Newtonsoft.Json;
     using WebSocketSharp;
 
     using WFMSocketizer;
+
+    using ToastNotifications;
+    using ToastNotifications.Lifetime;
+    using ToastNotifications.Position;
 
     using Timer = System.Windows.Forms.Timer;
 
@@ -20,22 +26,43 @@
     /// </summary>
     public partial class TrayIcon
     {
-        private readonly WebSocket ws;
-        private readonly NotifyIcon notifier = new NotifyIcon();
-        private Timer singleClickTimer;
+        private readonly WebSocket _ws;
+        private readonly NotifyIcon _notifierIcon = new NotifyIcon();
+        private Timer _singleClickTimer;
 
         public TrayIcon()
         {
-            ws = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
-           
+            _ws = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
             InitializeComponent();
-            notifier.Icon = Properties.Resources.TrayIcon;
-            notifier.MouseClick += Notifier_MouseClick;
-            notifier.MouseDoubleClick += Notifier_MouseDoubleClick;
-            notifier.Visible = true;
-            
-            ws.OnMessage += ReceiveMessage;
-            ws.Connect();
+            _notifierIcon.Icon = Properties.Resources.TrayIcon;
+            _notifierIcon.MouseClick += Notifier_MouseClick;
+            _notifierIcon.MouseDoubleClick += Notifier_MouseDoubleClick;
+            _notifierIcon.Visible = true;
+
+            int offSet = 0;
+            if (Utils.GetTaskBarLocation() == Utils.TaskBarLocation.Bottom)
+            {
+                offSet = Utils.GetTaskBarHeight();
+            }
+            Notifier notifier = new Notifier(cfg =>
+            {
+                cfg.PositionProvider = new PrimaryScreenPositionProvider(Corner.BottomRight, 8, offSet);
+
+                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                    TimeSpan.FromSeconds(3),
+                    MaximumNotificationCount.FromCount(5));
+                cfg.DisplayOptions.Width = 400;
+                cfg.Dispatcher = Current.Dispatcher;
+            });
+
+            notifier.ShowItemMessage("An item you wanted is now on sale", "https://warframe.market/static/assets/icons/en/Primed_Continuity.240ece0417bbfeff4410681ea2294f13.png");
+            Thread.Sleep(1000);
+            notifier.ShowItemMessage("An item you wanted is now on sale", "https://warframe.market/static/assets/icons/en/Primed_Continuity.240ece0417bbfeff4410681ea2294f13.png");
+            Thread.Sleep(1000);
+            notifier.ShowItemMessage("An item you wanted is now on sale", "https://warframe.market/static/assets/icons/en/Primed_Continuity.240ece0417bbfeff4410681ea2294f13.png");
+
+            //_ws.OnMessage += ReceiveMessage;
+            _ws.Connect();
             if (Global.Configuration.User.Account.Enabled && string.IsNullOrEmpty(Global.Configuration.User.Account.Cookie))
             {
                 string cookie = string.Empty;
@@ -61,33 +88,33 @@
         {
             if (e.Button == MouseButtons.Left)
             {
-                singleClickTimer = new Timer { Interval = (int)(SystemInformation.DoubleClickTime * 1.1) };
-                singleClickTimer.Tick += SingleClickTimer_Tick;
-                singleClickTimer.Start();
+                _singleClickTimer = new Timer { Interval = (int)(SystemInformation.DoubleClickTime * 1.1) };
+                _singleClickTimer.Tick += SingleClickTimer_Tick;
+                _singleClickTimer.Start();
             }
         }
 
         private void SingleClickTimer_Tick(object sender, EventArgs e)
         {
-            singleClickTimer.Stop();
+            _singleClickTimer.Stop();
 
-            if (ws.IsAlive)
+            if (_ws.IsAlive)
             {
-                notifier.ShowBalloonTip(
+                _notifierIcon.ShowBalloonTip(
                     1000,
                     "Warframe Trader Paused",
                     "No offers will be received while paused.",
                     ToolTipIcon.Info);
-                ws.Close();
+                _ws.Close();
             }
             else
             {
-                notifier.ShowBalloonTip(
+                _notifierIcon.ShowBalloonTip(
                     1000,
                     "Warframe Trader Unpaused",
                     "Back to work!",
                     ToolTipIcon.Info);
-                ws.Connect();
+                _ws.Connect();
             }
         }
 
@@ -95,7 +122,7 @@
         {
             if (e.Button == MouseButtons.Left)
             {
-                singleClickTimer.Stop();
+                _singleClickTimer.Stop();
                 MainWindow window = new MainWindow();
                 window.Show();
                 window.Activate();
@@ -104,11 +131,12 @@
 
         private void ReceiveMessage(object sender, MessageEventArgs e)
         {
-            PostLoad request = JsonConvert.DeserializeObject<PostLoad>(Utils.DecompressData(e.RawData));
+            string s = Utils.DecompressData(e.RawData);
+            PostLoad request = JsonConvert.DeserializeObject<PostLoad>(s);
 
             if (IsDisplayable(request))
             {
-                notifier.ShowBalloonTip(
+                _notifierIcon.ShowBalloonTip(
                     1000,
                     "Warframe Trader",
                     "Someone is selling what you want at a price you want!",

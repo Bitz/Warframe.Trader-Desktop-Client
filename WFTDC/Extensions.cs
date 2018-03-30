@@ -1,4 +1,6 @@
-﻿namespace WFTDC
+﻿using ToastNotifications;
+
+namespace WFTDC
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
@@ -6,15 +8,10 @@
 
     public static class Extensions
     {
-        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1306:FieldNamesMustBeginWithLowerCaseLetter", Justification = "Reviewed. Suppression is OK here.")]
-        public static bool Match<T>(this IEnumerable<T> Container)
-        {
-            if (!Container.Any())
-            {
-                return true;
-            }
 
-            return false;
+        public static void ShowItemMessage(this Notifier notifier, string message, string image)
+        {
+            notifier.Notify<CustomNotification>(() => new CustomNotification(message, image));
         }
     }
 }
