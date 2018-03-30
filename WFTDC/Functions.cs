@@ -2,16 +2,15 @@
 {
     using System.IO;
     using Newtonsoft.Json;
-    using WFMSocketizer;
 
     public class Functions
     {
         public class Config
         {
-            public static Configuration Load()
+            public static C.Configuration Load()
             {
                 string configBody = File.ReadAllText(PathToConfig());
-                Configuration config = JsonConvert.DeserializeObject<Configuration>(configBody);
+                C.Configuration config = JsonConvert.DeserializeObject<C.Configuration>(configBody);
                 return config;
             }
 

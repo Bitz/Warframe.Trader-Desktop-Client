@@ -67,7 +67,7 @@
         public long? ModRank { get; set; }
     }
 
-    public class Item
+    public partial class Item
     {
         [J("id")]
         public string Id { get; set; }
@@ -103,7 +103,7 @@
         public string ItemName { get; set; }
     }
 
-    public class User
+    public partial class User
     {
         [J("reputation")]
         public long Reputation { get; set; }

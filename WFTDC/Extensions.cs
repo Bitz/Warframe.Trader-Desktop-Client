@@ -1,17 +1,12 @@
-﻿using ToastNotifications;
-
-namespace WFTDC
+﻿namespace WFTDC
 {
-    using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
+    using System.Windows.Media;
 
-    public static class Extensions
+    public static partial class Extensions
     {
-
-        public static void ShowItemMessage(this Notifier notifier, string message, string image)
+        public static string ToHex(this Color c)
         {
-            notifier.Notify<CustomNotification>(() => new CustomNotification(message, image));
+            return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
         }
     }
 }

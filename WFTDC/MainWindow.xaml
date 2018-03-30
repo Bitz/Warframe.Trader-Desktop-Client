@@ -9,6 +9,5 @@
         mc:Ignorable="d"
         Title="Configure Settings" Height="350" Width="525" MinHeight="350">
     <Grid>
-        
     </Grid>
 </Window>

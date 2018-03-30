@@ -5,23 +5,70 @@
                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                               xmlns:core="clr-namespace:ToastNotifications.Core;assembly=ToastNotifications"
                               xmlns:local="clr-namespace:WFTDC"
-                              mc:Ignorable="d"  Background="Gray"
-                              d:DesignHeight="120" d:DesignWidth="650"
-                              d:DataContext="{d:DesignInstance local:CustomNotification, IsDesignTimeCreatable=False}" >
-    <Grid  Margin="5">
+                              mc:Ignorable="d"  
+                              d:DesignWidth="450"
+                              Background="#f5f5f5" 
+                              Foreground="#265663"
+                              d:DataContext="{d:DesignInstance local:ItemNotification, IsDesignTimeCreatable=False}">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <TextBlock Padding="4" Cursor="Hand" Grid.Row="0" Text="X" Grid.Column="1"  TextAlignment="Right" FontWeight="Light" Margin="0"  VerticalAlignment="Top"  Foreground="#77939b" FontSize="15" MouseUp="UIElement_OnMouseUp"/>
 
-        <Image Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Source="{Binding Image}" MaxHeight="100" MaxWidth="60" ></Image>
-        
-        <TextBlock Padding="10" Grid.Row="0" Grid.Column="1" Text="Warframe.Market" TextAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0" />
+        <Grid Grid.Row="0" Grid.Column="0" Background="#dedfdf">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Margin="4" Grid.Row="0" Grid.Column="0">
+                <Image Grid.Row="0" Grid.Column="0" Source="{Binding IconUrl}" Height="60" ></Image>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="0">
+                <TextBlock Name="WTTextBlock" Foreground="{Binding OfferForeground}"  Background="{Binding OfferBackground}" TextAlignment="Center" FontWeight="Bold" Margin="0"  VerticalAlignment="Center" FontSize="12"/>
+            </Grid>
+        </Grid>
 
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Message}" Foreground="White"  TextWrapping="Wrap" />
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 4 0 0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding PostLoad.Item.Name.ItemName}" TextAlignment="Right" FontWeight="Bold" Margin="0"  VerticalAlignment="Center" FontSize="14"/>
+                <TextBlock Padding="4 0 0 0 " Grid.Row="0" Text="{Binding Quantity}" Grid.Column="1"  TextAlignment="Left" FontWeight="Light" Margin="0"  VerticalAlignment="Center"  Foreground="#77939b" FontSize="15"/>
+               </Grid>
+
+            <Grid Margin="4 0 0 0"  Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding OfferText}"  FontSize="14" Foreground="{Binding OfferForeground}" />
+
+                <TextBlock Name="UserNameTextBlock" Grid.Row="1" Grid.Column="0" Text="{Binding PostLoad.User.Name}"  FontSize="12" TextDecorations="Underline" MouseDown="UserNameTextBlock_OnMouseDown" Cursor="Hand"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding PostLoad.User.Status}"  FontSize="12" Foreground="{Binding OfferForeground}" />
+            </Grid>
+        </Grid>
     </Grid>
 </core:NotificationDisplayPart>

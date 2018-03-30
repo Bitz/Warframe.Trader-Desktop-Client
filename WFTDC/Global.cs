@@ -1,10 +1,10 @@
 ﻿namespace WFTDC
 {
-    using WFMSocketizer;
+    using ToastNotifications;
 
     public class Global
     {
-        public static Configuration Configuration
+        public static C.Configuration Configuration
         {
             get
             {
@@ -17,6 +17,6 @@
             }
         }
 
-        private static Configuration _Configuration { get; set; }
+        private static C.Configuration _Configuration { get; set; }
     }
 }

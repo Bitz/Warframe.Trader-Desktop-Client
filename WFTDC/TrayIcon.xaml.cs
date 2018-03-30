@@ -1,23 +1,17 @@
-﻿
-
-
-using System.Threading;
-
-namespace WFTDC
+﻿namespace WFTDC
 {
     using System;
     using System.Linq;
     using System.Windows.Forms;
-    using static System.Windows.Application;
 
     using Newtonsoft.Json;
-    using WebSocketSharp;
-
-    using WFMSocketizer;
 
     using ToastNotifications;
     using ToastNotifications.Lifetime;
+    using ToastNotifications.Messages;
     using ToastNotifications.Position;
+
+    using WebSocketSharp;
 
     using Timer = System.Windows.Forms.Timer;
 
@@ -38,50 +32,28 @@ namespace WFTDC
             _notifierIcon.MouseClick += Notifier_MouseClick;
             _notifierIcon.MouseDoubleClick += Notifier_MouseDoubleClick;
             _notifierIcon.Visible = true;
-
-            int offSet = 0;
-            if (Utils.GetTaskBarLocation() == Utils.TaskBarLocation.Bottom)
-            {
-                offSet = Utils.GetTaskBarHeight();
-            }
-            Notifier notifier = new Notifier(cfg =>
-            {
-                cfg.PositionProvider = new PrimaryScreenPositionProvider(Corner.BottomRight, 8, offSet);
-
-                cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                    TimeSpan.FromSeconds(3),
-                    MaximumNotificationCount.FromCount(5));
-                cfg.DisplayOptions.Width = 400;
-                cfg.Dispatcher = Current.Dispatcher;
-            });
-
-            notifier.ShowItemMessage("An item you wanted is now on sale", "https://warframe.market/static/assets/icons/en/Primed_Continuity.240ece0417bbfeff4410681ea2294f13.png");
-            Thread.Sleep(1000);
-            notifier.ShowItemMessage("An item you wanted is now on sale", "https://warframe.market/static/assets/icons/en/Primed_Continuity.240ece0417bbfeff4410681ea2294f13.png");
-            Thread.Sleep(1000);
-            notifier.ShowItemMessage("An item you wanted is now on sale", "https://warframe.market/static/assets/icons/en/Primed_Continuity.240ece0417bbfeff4410681ea2294f13.png");
-
-            //_ws.OnMessage += ReceiveMessage;
             _ws.Connect();
-            if (Global.Configuration.User.Account.Enabled && string.IsNullOrEmpty(Global.Configuration.User.Account.Cookie))
-            {
-                string cookie = string.Empty;
-                switch (Global.Configuration.User.Account.GetCookieFrom)
-                {
-                    case Account.GetCookieFromEnum.ManualEntry:
-                        break;
-                    case Account.GetCookieFromEnum.Chrome:
-                        Cookie.GetCookieFromChrome("warframe.market", "JWT", ref cookie);
-                        Global.Configuration.User.Account.Cookie = cookie;
-                        Functions.Config.Save();
-                        break;
-                    case Account.GetCookieFromEnum.InternetExplorer:
-                        Cookie.GetCookieFromInternetExplorer("warframe.market", "JWT", ref cookie);
-                        Global.Configuration.User.Account.Cookie = cookie;
-                        Functions.Config.Save();
-                        break;
-                }
-            }
+            _ws.OnMessage += ReceiveMessage;
+
+            ////if (Global.Configuration.User.Account.Enabled && string.IsNullOrEmpty(Global.Configuration.User.Account.Cookie))
+            ////{
+            ////    string cookie = string.Empty;
+            ////    switch (Global.Configuration.User.Account.GetCookieFrom)
+            ////    {
+            ////        case Account.GetCookieFromEnum.ManualEntry:
+            ////            break;
+            ////        case Account.GetCookieFromEnum.Chrome:
+            ////            Cookie.GetCookieFromChrome("warframe.market", "JWT", ref cookie);
+            ////            Global.Configuration.User.Account.Cookie = cookie;
+            ////            Functions.Config.Save();
+            ////            break;
+            ////        case Account.GetCookieFromEnum.InternetExplorer:
+            ////            Cookie.GetCookieFromInternetExplorer("warframe.market", "JWT", ref cookie);
+            ////            Global.Configuration.User.Account.Cookie = cookie;
+            ////            Functions.Config.Save();
+            ////            break;
+            ////    }
+            ////}
         }
 
         private void Notifier_MouseClick(object sender, MouseEventArgs e)
@@ -100,22 +72,14 @@ namespace WFTDC
 
             if (_ws.IsAlive)
             {
-                _notifierIcon.ShowBalloonTip(
-                    1000,
-                    "Warframe Trader Paused",
-                    "No offers will be received while paused.",
-                    ToolTipIcon.Info);
                 _ws.Close();
             }
             else
             {
-                _notifierIcon.ShowBalloonTip(
-                    1000,
-                    "Warframe Trader Unpaused",
-                    "Back to work!",
-                    ToolTipIcon.Info);
                 _ws.Connect();
             }
+
+            NotificationManager.Notifier.ShowInformation(_ws.IsAlive ? "Trade is now unpaused." : "Trader is now paused.");
         }
 
         private void Notifier_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -134,13 +98,10 @@ namespace WFTDC
             string s = Utils.DecompressData(e.RawData);
             PostLoad request = JsonConvert.DeserializeObject<PostLoad>(s);
 
+            NotificationManager.Notifier.ShowItem(request);
             if (IsDisplayable(request))
             {
-                _notifierIcon.ShowBalloonTip(
-                    1000,
-                    "Warframe Trader",
-                    "Someone is selling what you want at a price you want!",
-                    ToolTipIcon.Info);
+                NotificationManager.Notifier.ShowItem(request);
             }
         }
         
