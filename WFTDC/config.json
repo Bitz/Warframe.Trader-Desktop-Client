@@ -1,0 +1,25 @@
+﻿{
+  "User": {
+    "Platform" :  0, 
+    "Region" :  0, 
+    "Id": "3ea37a85-a3f8-4dc6-8027-71faad0d1d47",
+    "Account": {
+      "Enabled": true,
+      "SetStatus": 0,
+      "Cookie": "",
+      "GetCookieFrom": 1
+    }
+  },
+  "Items": [
+    {
+      "Name": "anasa_ayatan_sculpture",
+      "QuantityMin": 1,
+      "QuantityMax": 5,
+      "ModRankMin" : 0, 
+      "ModRankMax" : 4, 
+      "Type": 1,
+      "Price": 14,
+      "UserStates": [0,2]
+    }
+  ]
+}
