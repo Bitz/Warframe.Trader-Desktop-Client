@@ -4,30 +4,31 @@
 
     public static class Constants
     {
-        private static readonly string wTSForeground;
-
-        private static readonly string wTSBackground;
-
-        private static readonly string wTBForeground;
-
-        private static readonly string wTBBackground;
-
-
         static Constants()
         {
-            wTSForeground = Color.FromRgb(127, 44, 98).ToHex();
-            wTSBackground = Color.FromRgb(225, 198, 215).ToHex();
+            WtsForeground = Color.FromRgb(127, 44, 98).ToHex();
+            WtsBackground = Color.FromRgb(225, 198, 215).ToHex();
 
-            wTBForeground = Color.FromRgb(28, 138, 98).ToHex(); 
-            wTBBackground = Color.FromRgb(198, 225, 215).ToHex();
+            WtbForeground = Color.FromRgb(28, 138, 98).ToHex(); 
+            WtbBackground = Color.FromRgb(198, 225, 215).ToHex();
+
+            StatusForegroundOnline = Colors.DarkGreen.ToHex();
+            StatusForegroundIngame = Colors.MediumPurple.ToHex();
+            StatusForegroundOffline = Colors.DarkRed.ToHex();
         }
 
-        public static string WTBBackground { get => wTBBackground;  }
+        public static string WtbBackground { get; }
 
-        public static string WTBForeground { get => wTBForeground;  }
+        public static string WtbForeground { get; }
 
-        public static string WTSBackground { get => wTSBackground;  }
+        public static string WtsBackground { get; }
 
-        public static string WTSForeground { get => wTSForeground;  }
+        public static string WtsForeground { get; }
+
+        public static string StatusForegroundOnline { get; }
+
+        public static string StatusForegroundIngame { get; }
+
+        public static string StatusForegroundOffline { get; }
     }
 }

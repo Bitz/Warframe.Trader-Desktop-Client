@@ -3,6 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" ShowInTaskbar="False"
-        WindowStyle="None" Height="0" Width="0">
+        mc:Ignorable="d" ShowInTaskbar="False" Closing="OnWindowClosing" Topmost="True"
+        WindowStyle="None" Height="0" Width="0"  Visibility="Hidden" SizeToContent="WidthAndHeight" ResizeMode="NoResize" AllowsTransparency="True">
 </Window>

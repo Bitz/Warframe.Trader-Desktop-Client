@@ -5,6 +5,7 @@
                               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                               xmlns:core="clr-namespace:ToastNotifications.Core;assembly=ToastNotifications"
                               xmlns:local="clr-namespace:WFTDC"
+                              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
                               mc:Ignorable="d"  
                               d:DesignWidth="450"
                               Background="#f5f5f5" 
@@ -18,7 +19,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock Padding="4" Cursor="Hand" Grid.Row="0" Text="X" Grid.Column="1"  TextAlignment="Right" FontWeight="Light" Margin="0"  VerticalAlignment="Top"  Foreground="#77939b" FontSize="15" MouseUp="UIElement_OnMouseUp"/>
+        <TextBlock Padding="0 0 4 0" Cursor="Hand" Grid.Row="0" Text="X" Grid.Column="1"  TextAlignment="Right" FontWeight="UltraBold"  Margin="0"  VerticalAlignment="Top"  Foreground="#dedfdf" FontSize="15" MouseUp="UIElement_OnMouseUp"/>
 
         <Grid Grid.Row="0" Grid.Column="0" Background="#dedfdf">
             <Grid.RowDefinitions>
@@ -32,7 +33,7 @@
                 <Image Grid.Row="0" Grid.Column="0" Source="{Binding IconUrl}" Height="60" ></Image>
             </Grid>
             <Grid Grid.Row="1" Grid.Column="0">
-                <TextBlock Name="WTTextBlock" Foreground="{Binding OfferForeground}"  Background="{Binding OfferBackground}" TextAlignment="Center" FontWeight="Bold" Margin="0"  VerticalAlignment="Center" FontSize="12"/>
+                <TextBlock Name="WtTextBlock" Foreground="{Binding OfferForeground}"  Background="{Binding OfferBackground}" TextAlignment="Center" FontWeight="Bold" Margin="0"  VerticalAlignment="Center" FontSize="12"/>
             </Grid>
         </Grid>
 
@@ -44,30 +45,61 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 4 0 0" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="50"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding PostLoad.Item.Name.ItemName}" TextAlignment="Right" FontWeight="Bold" Margin="0"  VerticalAlignment="Center" FontSize="14"/>
-                <TextBlock Padding="4 0 0 0 " Grid.Row="0" Text="{Binding Quantity}" Grid.Column="1"  TextAlignment="Left" FontWeight="Light" Margin="0"  VerticalAlignment="Center"  Foreground="#77939b" FontSize="15"/>
-               </Grid>
 
-            <Grid Margin="4 0 0 0"  Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Grid Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4 0 0 0" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="48"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding FullName}" TextAlignment="Right" FontWeight="Bold" Margin="0"  VerticalAlignment="Center" FontSize="14"/>
+                <TextBlock Padding="4 0 0 0 " Grid.Row="0" Text="{Binding Quantity}" Grid.Column="1"  TextAlignment="Left" FontWeight="Light" Margin="0"  VerticalAlignment="Center"  Foreground="#77939b" FontSize="15"/>
+            </Grid>
+
+            <Grid  Grid.Row="1" Grid.Column="0">
+                <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                <Grid Margin="4 0 0 0"  Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding OfferText}"  FontSize="14" Foreground="{Binding OfferForeground}" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding OfferText}"  FontSize="14" Foreground="{Binding OfferForeground}" FontWeight="SemiBold" Margin="0 12 0 12" />
 
-                <TextBlock Name="UserNameTextBlock" Grid.Row="1" Grid.Column="0" Text="{Binding PostLoad.User.Name}"  FontSize="12" TextDecorations="Underline" MouseDown="UserNameTextBlock_OnMouseDown" Cursor="Hand"/>
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding PostLoad.User.Status}"  FontSize="12" Foreground="{Binding OfferForeground}" />
+                    <Grid Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Name="UserNameTextBlock" Grid.Row="0" Grid.Column="0" Text="{Binding PostLoad.User.Name}"  FontSize="12" TextDecorations="Underline" MouseDown="UserNameTextBlock_OnMouseDown" Cursor="Hand"/>
+                        <TextBlock Margin="4 0 0 0" Grid.Row="0" Grid.Column="1" Text="{Binding UserStatus}"  FontSize="10" Foreground="{Binding StatusForeground}" VerticalAlignment="Bottom" />
+                    </Grid>
+                </Grid>
+                
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Button materialDesign:ShadowAssist.ShadowDepth="Depth0" Foreground="White" Background="#265663" Padding="0" BorderThickness="0" Grid.Column="0" Grid.Row="0" Content="{materialDesign:PackIcon Comment}" Height="48" Margin="4" Click="SendMessageOnWebsite_OnClick"/>
+                    <Button materialDesign:ShadowAssist.ShadowDepth="Depth0" Foreground="White" Background="#265663" Padding="0" BorderThickness="0" Grid.Column="1" Grid.Row="0" Content="{materialDesign:PackIcon Clipboard}" Height="48"  Margin="4" Click="AddMessageToClipboard_OnClick"/>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

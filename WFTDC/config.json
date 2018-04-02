@@ -15,11 +15,11 @@
       "Name": "anasa_ayatan_sculpture",
       "QuantityMin": 1,
       "QuantityMax": 5,
-      "ModRankMin" : 0, 
-      "ModRankMax" : 4, 
+      "ModRankMin": 0,
+      "ModRankMax": 4,
       "Type": 1,
       "Price": 14,
-      "UserStates": [0,2]
+      "UserStates": [ 0, 2 ]
     }
   ]
 }

@@ -1,4 +1,7 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace WFTDC
 {
@@ -11,6 +14,46 @@ namespace WFTDC
     /// </summary>
     internal class Utils
     {
+        public static class Retry
+        {
+            /// <summary>
+            ///  Utility used to retry things that may be fixed by wating - for example, if the file is still being written to.  
+            /// </summary>
+            /// <param name="action"> The function to retry</param>
+            /// <param name="timeBetweenRetry">Time to wait between retries. Defaults to 2 seconds.</param>
+            /// <param name="retryCount">Number of times to retry. Defaults to 3 tries.</param>
+            public static void Do(Action action, int timeBetweenRetry = 2, int retryCount = 3)
+            {
+                TimeSpan retryInterval = TimeSpan.FromSeconds(timeBetweenRetry);
+                DoAndGetReturn<object>(() =>
+                {
+                    action();
+                    return null;
+                }, retryInterval.Seconds, retryCount);
+            }
+
+
+            public static T DoAndGetReturn<T>(Func<T> action, int timeBetweenRetry = 5, int retryCount = 3)
+            {
+                TimeSpan retryInterval = TimeSpan.FromSeconds(timeBetweenRetry);
+                List<Exception> exceptions = new List<Exception>();
+                for (int retry = 0; retry < retryCount; retry++)
+                {
+                    try
+                    {
+                        if (retry > 0)
+                            Thread.Sleep(retryInterval);
+                        return action();
+                    }
+                    catch (Exception ex)
+                    {
+                        exceptions.Add(ex);
+                    }
+                }
+                throw new AggregateException(exceptions);
+            }
+        }
+
         public static byte[] CompressData(string message)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(message);

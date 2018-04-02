@@ -1,15 +1,18 @@
-﻿namespace WFTDC
+﻿
+
+using System.Windows;
+
+namespace WFTDC
 {
     using System;
     using System.Linq;
     using System.Windows.Forms;
+    using System.ComponentModel;
+    using System.Threading;
 
     using Newtonsoft.Json;
-
-    using ToastNotifications;
-    using ToastNotifications.Lifetime;
+    
     using ToastNotifications.Messages;
-    using ToastNotifications.Position;
 
     using WebSocketSharp;
 
@@ -22,19 +25,34 @@
     {
         private readonly WebSocket _ws;
         private readonly NotifyIcon _notifierIcon = new NotifyIcon();
+        private readonly ContextMenu _menu;
         private Timer _singleClickTimer;
 
         public TrayIcon()
         {
-            _ws = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
             InitializeComponent();
+
+            _menu = new ContextMenu();
+            var mConfigure = new MenuItem("Configure");
+            _menu.MenuItems.Add(mConfigure);
+
+            _menu.MenuItems.Add(new MenuItem("Pause"));
+
+            _menu.MenuItems.Add(new MenuItem("-"));
+
+            var mExit = new MenuItem("Exit");
+            mExit.Click += (sender, args) => Close();
+            _menu.MenuItems.Add(mExit);
             _notifierIcon.Icon = Properties.Resources.TrayIcon;
             _notifierIcon.MouseClick += Notifier_MouseClick;
             _notifierIcon.MouseDoubleClick += Notifier_MouseDoubleClick;
             _notifierIcon.Visible = true;
-            _ws.Connect();
-            _ws.OnMessage += ReceiveMessage;
 
+            _notifierIcon.ContextMenu = _menu;
+            _ws = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
+            _ws.OnMessage += ReceiveMessage;
+            _ws.OnClose += WsOnOnClose;
+            _ws.Connect();
             ////if (Global.Configuration.User.Account.Enabled && string.IsNullOrEmpty(Global.Configuration.User.Account.Cookie))
             ////{
             ////    string cookie = string.Empty;
@@ -56,6 +74,18 @@
             ////}
         }
 
+        private void WsOnOnClose(object sender, CloseEventArgs closeEventArgs)
+        {
+            if (!closeEventArgs.WasClean)
+            {
+                if (!_ws.IsAlive)
+                {
+                    Thread.Sleep(10000);
+                    _ws.Connect();
+                }
+            }
+        }
+
         private void Notifier_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -63,6 +93,9 @@
                 _singleClickTimer = new Timer { Interval = (int)(SystemInformation.DoubleClickTime * 1.1) };
                 _singleClickTimer.Tick += SingleClickTimer_Tick;
                 _singleClickTimer.Start();
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
             }
         }
 
@@ -98,7 +131,7 @@
             string s = Utils.DecompressData(e.RawData);
             PostLoad request = JsonConvert.DeserializeObject<PostLoad>(s);
 
-            NotificationManager.Notifier.ShowItem(request);
+            //NotificationManager.Notifier.ShowItem(request);
             if (IsDisplayable(request))
             {
                 NotificationManager.Notifier.ShowItem(request);
@@ -130,8 +163,8 @@
 
             // Do we have a matching price? 
             matcher = matcher.Where(x =>
-                (request.Platinum >= x.Price && x.Type == OrderType.Sell) || // (Equal to or cheaper than our buy offer)
-                (request.Platinum <= x.Price && x.Type == OrderType.Buy)) // (Equal or better than our sell offer)
+                (request.Platinum <= x.Price && x.Type == OrderType.Sell) || // (Equal to or cheaper than our buy offer)
+                (request.Platinum >= x.Price && x.Type == OrderType.Buy)) // (Equal or better than our sell offer)
                 .ToArray(); 
             if (!matcher.Any())
             {
@@ -164,6 +197,18 @@
             }
 
             return matcher.Any();
+        }
+
+        public void OnWindowClosing(object sender, CancelEventArgs cancelEventArgs)
+        {
+            _ws.Close();
+            NotificationManager.Notifier.Dispose();
+            _notifierIcon.Dispose();
+        }
+
+        private void CleanExit(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

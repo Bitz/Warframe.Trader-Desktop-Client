@@ -6,12 +6,6 @@
     {
         private CustomDisplayPart _displayPart;
         private PostLoad _postLoad;
-        private string _iconUrl;
-        private string _fullName;
-        private string _quantity;
-        private string _offerText;
-        private string _offerForeground;
-        private string _offerBackground;
 
         public ItemNotification(PostLoad postLoad)
         {
@@ -39,18 +33,34 @@
 
             if (postLoad.Quantity > 1)
             {
-                OfferText += $"Each ({postLoad.Quantity * postLoad.Platinum})";
+                OfferText += $" Each ({postLoad.Quantity * postLoad.Platinum})";
             }
 
             switch (_postLoad.Type)
             {
                 case OrderType.Buy:
-                    _offerForeground = Constants.WTBForeground;
-                    _offerBackground = Constants.WTBBackground;
+                    OfferForeground = Constants.WtbForeground;
+                    OfferBackground = Constants.WtbBackground;
                     break;
                 case OrderType.Sell:
-                    _offerForeground = Constants.WTSForeground;
-                    _offerBackground = Constants.WTSBackground;
+                    OfferForeground = Constants.WtsForeground;
+                    OfferBackground = Constants.WtsBackground;
+                    break;
+            }
+
+            switch (_postLoad.User.Status)
+            {
+                case Status.Ingame:
+                    UserStatus = "ONLINE IN GAME";
+                    StatusForeground = Constants.StatusForegroundIngame;
+                    break;
+                case Status.Offline:
+                    UserStatus = "OFFLINE";
+                    StatusForeground = Constants.StatusForegroundOffline;
+                    break;
+                case Status.Online:
+                    UserStatus = "ONLINE";
+                    StatusForeground = Constants.StatusForegroundOnline;
                     break;
             }
         }
@@ -64,40 +74,20 @@
             set => _postLoad = value;
         }
 
-        public string IconUrl
-        {
-            get => _iconUrl;
-            set => _iconUrl = value;
-        }
+        public string IconUrl { get; set; }
 
-        public string FullName
-        {
-            get => _fullName;
-            set => _fullName = value;
-        }
+        public string FullName { get; set; }
 
-        public string Quantity
-        {
-            get => _quantity;
-            set => _quantity = value;
-        }
+        public string Quantity { get; set; }
 
-        public string OfferText
-        {
-            get => _offerText;
-            set => _offerText = value;
-        }
+        public string OfferText { get; set; }
 
-        public string OfferForeground
-        {
-            get => _offerForeground;
-            set => _offerForeground = value;
-        }
+        public string OfferForeground { get; set; }
 
-        public string OfferBackground
-        {
-            get => _offerBackground;
-            set => _offerBackground = value;
-        }
+        public string OfferBackground { get; set; }
+
+        public string UserStatus { get; set; }
+
+        public string StatusForeground { get; set; }
     }
 }
