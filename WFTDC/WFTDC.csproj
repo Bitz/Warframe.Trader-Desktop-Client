@@ -29,7 +29,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -80,16 +80,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FileNameAssociation.cs" />
+    <Compile Include="ItemDatabase.cs" />
+    <Compile Include="Windows\AddItemWindow.xaml.cs">
+      <DependentUpon>AddItemWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Models\AddItem.cs" />
+    <Compile Include="Windows\Models\ConfigPage.cs" />
     <Compile Include="Configuraiton.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Cookie.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="Global.cs" />
-    <Compile Include="ItemNotification.cs" />
-    <Compile Include="CustomDisplayPart.xaml.cs">
+    <Compile Include="Windows\Models\ItemNotification.cs" />
+    <Compile Include="Windows\CustomDisplayPart.xaml.cs">
       <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ItemPayload.cs" />
     <Compile Include="NotificationManager.cs" />
     <Compile Include="Payload.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -97,11 +105,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TrayIcon.xaml.cs">
+    <Compile Include="Windows\TrayIcon.xaml.cs">
       <DependentUpon>TrayIcon.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
-    <Page Include="MainWindow.xaml">
+    <Page Include="Windows\AddItemWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -109,15 +121,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="CustomDisplayPart.xaml">
+    <Page Include="Windows\CustomDisplayPart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TrayIcon.xaml">
+    <Page Include="Windows\TrayIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

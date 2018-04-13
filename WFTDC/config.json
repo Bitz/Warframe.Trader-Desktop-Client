@@ -1,7 +1,8 @@
 ﻿{
   "User": {
-    "Platform" :  0, 
-    "Region" :  0, 
+    "UserStates": [ 0, 2 ],
+    "Platform": 0,
+    "Region": 0,
     "Id": "3ea37a85-a3f8-4dc6-8027-71faad0d1d47",
     "Account": {
       "Enabled": true,
@@ -12,14 +13,26 @@
   },
   "Items": [
     {
-      "Name": "anasa_ayatan_sculpture",
+      "Enabled": true, 
+      "Name": "Anasa Ayatan Sculpture",
+      "UrlName": "anasa_ayatan_sculpture",
       "QuantityMin": 1,
       "QuantityMax": 5,
-      "ModRankMin": 0,
+      "ModRankMin": 4,
       "ModRankMax": 4,
       "Type": 1,
-      "Price": 14,
-      "UserStates": [ 0, 2 ]
+      "Price": 14
+    },
+    {
+      "Enabled": true,
+      "Name": "Orta Ayatan Sculpture",
+      "UrlName": "orta_ayatan_sculpture",
+      "QuantityMin": 1,
+      "QuantityMax": 5,
+      "ModRankMin": 4,
+      "ModRankMax": 4,
+      "Type": 1,
+      "Price": 10
     }
   ]
 }

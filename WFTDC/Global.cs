@@ -1,7 +1,5 @@
 ﻿namespace WFTDC
 {
-    using ToastNotifications;
-
     public class Global
     {
         public static C.Configuration Configuration

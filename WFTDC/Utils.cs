@@ -120,6 +120,11 @@ namespace WFTDC
             return taskBarLocation;
         }
 
+        public static int GetWorkableScreenHeight()
+        {
+            return Screen.PrimaryScreen.WorkingArea.Height;
+        }
+
         public static int GetTaskBarHeight()
         {
             int height = Screen.PrimaryScreen.Bounds.Height - Screen.PrimaryScreen.WorkingArea.Height;
