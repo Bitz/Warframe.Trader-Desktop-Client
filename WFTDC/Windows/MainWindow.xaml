@@ -10,8 +10,7 @@
         Foreground="#265663"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        xmlns:models="clr-namespace:WFTDC.Windows.Models"
-        d:DataContext="{d:DesignInstance models:ConfigPage}"
+        DataContext="{Binding ElementName=_config}"
         Title="Configure Settings" Height="420" Width="200" MinHeight="350" MinWidth="440">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -21,7 +20,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListView DataContext="{Binding ContentList, UpdateSourceTrigger=PropertyChanged}" Margin="0 -16 0 0" Grid.Row="1" Grid.Column="0" Background="White" x:Name="lvItemsList" SelectionChanged="LvItemsList_OnSelected" >
+        <ListView DataContext="{Binding ContentList}" ItemsSource="{Binding}" Margin="0 -16 0 0" Grid.Row="1" Grid.Column="0" Background="White" Name="lvItemsList" SelectionChanged="LvItemsList_OnSelected" >
             <ListView.Resources>
                 <Style TargetType="{x:Type GridViewColumnHeader}">
                     <Setter Property="Visibility" Value="Hidden" />
@@ -73,7 +72,8 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="14"/>
-                                    <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold"  VerticalAlignment="Top" Padding="0 0 4 0"><Run Text="Rank"/></TextBlock>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold"  VerticalAlignment="Top" Padding="0 0 4 0" Text="Rank"/>
                                     <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Top" Text="{Binding Rank}"/>
                                 </Grid>
                             </DataTemplate>

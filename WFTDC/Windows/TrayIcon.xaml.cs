@@ -28,6 +28,7 @@ namespace WFTDC.Windows
             _menu = new ContextMenu();
             var mConfigure = new MenuItem("Configure");
             _menu.MenuItems.Add(mConfigure);
+            mConfigure.Click += (sender, args) => ShowConfigWindow();
 
             var pauseUnpause = new MenuItem("Pause");
             pauseUnpause.Click += (sender, args) => PauseToggle();
@@ -121,10 +122,15 @@ namespace WFTDC.Windows
             if (e.Button == MouseButtons.Left)
             {
                 _singleClickTimer.Stop();
-                MainWindow window = new MainWindow();
-                window.Show();
-                window.Activate();
+                ShowConfigWindow();
             }
+        }
+
+        private void ShowConfigWindow()
+        {
+            MainWindow window = new MainWindow();
+            window.Show();
+            window.Activate();
         }
 
         private void ReceiveMessage(object sender, MessageEventArgs e)
@@ -138,7 +144,7 @@ namespace WFTDC.Windows
             }
             else
             {
-                NotificationManager.Notifier.ShowItem(request);
+                //NotificationManager.Notifier.ShowItem(request);
             }
         }
         
@@ -213,7 +219,6 @@ namespace WFTDC.Windows
             _ws.Close();
             NotificationManager.Notifier.Dispose();
             _notifierIcon.Dispose();
-            Close();
             Application.Exit();
         }
     }

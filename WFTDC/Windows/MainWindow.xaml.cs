@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using WFTDC.Windows.Models;
 
 namespace WFTDC.Windows
@@ -15,8 +17,8 @@ namespace WFTDC.Windows
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = _config;
             MaxHeight = Utils.GetWorkableScreenHeight() * 1.1;
+            DataContext = _config;
             ReloadData();
         }
 
@@ -90,6 +92,8 @@ namespace WFTDC.Windows
                     g.OrderBackground = Constants.WtsBackground;
                     break;
             }
+
+            g.Configitem = i;
             return g;
         }
 
@@ -106,31 +110,38 @@ namespace WFTDC.Windows
 
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
-            MenuItem item = (MenuItem) sender;
-            var gridView = (GridItem) item.DataContext;
-            gridView.Name = "AAAAAAAAAAA";
+            //MenuItem item = (MenuItem) sender;
+            //var gridView = (GridItem) item.DataContext;
+            MessageBox.Show("Coming Soon", "TODO", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void Delete_OnClick(object sender, RoutedEventArgs e)
         {
             MenuItem item = (MenuItem)sender;
             var gridView = (GridItem)item.DataContext;
-            //TODO Actual removal from config.
             _config.ContentList.Remove(gridView);
+            Global.Configuration.Items.Remove(gridView.Configitem);
+            Functions.Config.Save();
         }
 
+        private AddItemWindow window;
         private void AddWatcher_Click(object sender, RoutedEventArgs e)
         {
-            AddItemWindow window = new AddItemWindow();
+            IsEnabled = false;
+            window = new AddItemWindow();
+            window.Closing += (o, args) =>
+            {
+                ReloadData();
+                IsEnabled = true;
+            };
             window.ShowDialog();
             window.Activate();
             window.Focus();
-            window.Topmost = true;
         }
 
         private void Account_Click(object sender, RoutedEventArgs e)
         {
-            ReloadData();
+            MessageBox.Show("Coming Soon", "TODO", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

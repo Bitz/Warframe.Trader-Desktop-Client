@@ -33,6 +33,14 @@ namespace WFTDC.Windows.Models
         private string _rank;
         private string _quantity;
         private int _price;
+        private C.Item _configItem;
+
+
+        public C.Item Configitem
+        {
+            get { return _configItem; }
+            set { _configItem = value; OnPropertyChanged(); }
+        }
 
         public OrderType Type
         {

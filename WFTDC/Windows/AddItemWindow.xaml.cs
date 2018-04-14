@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
 using WFTDC.Items;
 using WFTDC.Windows.Models;
 
@@ -27,6 +28,20 @@ namespace WFTDC.Windows
             InitializeComponent();
             CB_BuySellSelector.SelectedIndex = 0;
             CB_QuantityType.SelectedIndex = 0;
+
+            PopulateWithDefaults();
+        }
+
+        private void PopulateWithDefaults()
+        {
+            foreach (C.Item configurationItem in Global.Configuration.Items)
+            {
+                var item = _listOfItems.FirstOrDefault(c => c.UrlName == configurationItem.UrlName);
+                if (item != null)
+                {
+                    _data.ItemList.Add(item);
+                }
+            }
         }
 
         private void Search_ForItem_MouseUp(object sender, KeyEventArgs e)
@@ -58,6 +73,7 @@ namespace WFTDC.Windows
             else
             {
                 _data.ItemList.Clear();
+                PopulateWithDefaults();
             }
         }
 
@@ -164,6 +180,8 @@ namespace WFTDC.Windows
                     Quantity_Selector_Between.Visibility = Visibility.Visible;
                     break;
             }
+
+
         }
 
         private void TrySave_Click(object sender, RoutedEventArgs e)
@@ -214,6 +232,32 @@ namespace WFTDC.Windows
             }
 
             Global.Configuration.Items.Add(itemBody);
+            Functions.Config.Save();
+            Close();
         }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private async void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            StackPanel stackPanel = new StackPanel {Margin = new Thickness(4, 4, 4, 4)};
+            TextBlock t = new TextBlock
+            {
+                Text = "AAAAAAAAAA",
+                Padding = new Thickness(20, 20, 20, 20)
+            };
+            Button b = new Button
+            {
+                Command = DialogHost.CloseDialogCommand,
+                Content = "Close"
+            };
+            stackPanel.Children.Add(t);
+            stackPanel.Children.Add(b);
+            await DialogHost.Show(stackPanel);
+        }
+
     }
 }
