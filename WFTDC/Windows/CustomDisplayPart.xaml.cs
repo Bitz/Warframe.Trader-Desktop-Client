@@ -1,11 +1,11 @@
-﻿using System.Windows;
-using static System.Diagnostics.Process;
+﻿using System.Diagnostics;
+using System.Windows;
+using System.Windows.Input;
+using ToastNotifications.Core;
+using WFTDC.Windows.Models;
 
-namespace WFTDC
+namespace WFTDC.Windows
 {
-    using System.Windows.Input;
-    using ToastNotifications.Core;
-
     public partial class CustomDisplayPart
     {
         private readonly ItemNotification _itemNotification;
@@ -30,10 +30,10 @@ namespace WFTDC
 
         private void UserNameTextBlock_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            Start("https://warframe.market/profile/" + _itemNotification.PostLoad.User.Name);
+            Process.Start("https://warframe.market/profile/" + _itemNotification.PostLoad.User.Name);
         }
 
-        private void UIElement_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void UIElement_OnMouseUp(object sender, RoutedEventArgs routedEventArgs)
         {
             if (DataContext is INotification dc) dc.Close();
         }
@@ -41,14 +41,14 @@ namespace WFTDC
         private void AddMessageToClipboard_OnClick(object sender, RoutedEventArgs e)
         {
             string message =
-                $"/w {_itemNotification.PostLoad.User.Name} Hi! I want to {_itemNotification.PostLoad.Type.ToString().ToLower()}: {_itemNotification.PostLoad.Item.Name.ItemName} for {_itemNotification.PostLoad.Platinum} platinum. (warframe.market)";
+                $"/w {_itemNotification.PostLoad.User.Name} Hi! I want to {_itemNotification.PostLoad.Type.ToString().ToLower()}: {_itemNotification.PostLoad.Item.Name} for {_itemNotification.PostLoad.Platinum} :platinum:. (Warframe.Market Desktop Client)";
             Clipboard.SetText(message);
             if (DataContext is INotification dc) dc.Close();
         }
 
         private void SendMessageOnWebsite_OnClick(object sender, RoutedEventArgs e)
         {
-            Start("https://warframe.market/im/chats");
+            Process.Start("https://warframe.market/profile/" + _itemNotification.PostLoad.User.Name);
         }
     }
 }

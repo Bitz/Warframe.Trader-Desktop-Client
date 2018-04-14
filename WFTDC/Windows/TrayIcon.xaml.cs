@@ -1,21 +1,14 @@
-﻿
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
+using Newtonsoft.Json;
+using ToastNotifications.Messages;
+using WebSocketSharp;
 
-using System.Windows;
-
-namespace WFTDC
+namespace WFTDC.Windows
 {
-    using System;
-    using System.Linq;
-    using System.Windows.Forms;
-    using System.ComponentModel;
-    using System.Threading;
-
-    using Newtonsoft.Json;
-    
-    using ToastNotifications.Messages;
-
-    using WebSocketSharp;
-
     using Timer = System.Windows.Forms.Timer;
 
     /// <summary>
@@ -35,8 +28,11 @@ namespace WFTDC
             _menu = new ContextMenu();
             var mConfigure = new MenuItem("Configure");
             _menu.MenuItems.Add(mConfigure);
+            mConfigure.Click += (sender, args) => ShowConfigWindow();
 
-            _menu.MenuItems.Add(new MenuItem("Pause"));
+            var pauseUnpause = new MenuItem("Pause");
+            pauseUnpause.Click += (sender, args) => PauseToggle();
+            _menu.MenuItems.Add(pauseUnpause);
 
             _menu.MenuItems.Add(new MenuItem("-"));
 
@@ -47,8 +43,8 @@ namespace WFTDC
             _notifierIcon.MouseClick += Notifier_MouseClick;
             _notifierIcon.MouseDoubleClick += Notifier_MouseDoubleClick;
             _notifierIcon.Visible = true;
-
             _notifierIcon.ContextMenu = _menu;
+
             _ws = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
             _ws.OnMessage += ReceiveMessage;
             _ws.OnClose += WsOnOnClose;
@@ -102,7 +98,11 @@ namespace WFTDC
         private void SingleClickTimer_Tick(object sender, EventArgs e)
         {
             _singleClickTimer.Stop();
+            PauseToggle();
+        }
 
+        private void PauseToggle()
+        {
             if (_ws.IsAlive)
             {
                 _ws.Close();
@@ -113,6 +113,7 @@ namespace WFTDC
             }
 
             NotificationManager.Notifier.ShowInformation(_ws.IsAlive ? "Trade is now unpaused." : "Trader is now paused.");
+            _menu.MenuItems[1].Text = _ws.IsAlive ? "Pause" : "Resume";
         }
 
         private void Notifier_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -120,25 +121,32 @@ namespace WFTDC
             if (e.Button == MouseButtons.Left)
             {
                 _singleClickTimer.Stop();
-                MainWindow window = new MainWindow();
-                window.Show();
-                window.Activate();
+                ShowConfigWindow();
             }
+        }
+
+        private void ShowConfigWindow()
+        {
+            MainWindow window = new MainWindow();
+            window.Show();
+            window.Activate();
         }
 
         private void ReceiveMessage(object sender, MessageEventArgs e)
         {
             string s = Utils.DecompressData(e.RawData);
             PostLoad request = JsonConvert.DeserializeObject<PostLoad>(s);
-
-            //NotificationManager.Notifier.ShowItem(request);
+            
             if (IsDisplayable(request))
             {
                 NotificationManager.Notifier.ShowItem(request);
             }
+            else
+            {
+                //NotificationManager.Notifier.ShowItem(request);
+            }
         }
         
-        // ReSharper disable once StyleCop.SA1204
         private static bool IsDisplayable(PostLoad request)
         {
             // If the item offer is not from our region or platform, we don't care
@@ -147,8 +155,21 @@ namespace WFTDC
                 return false;
             }
 
-            // Do we have a matching item? (Check the name)
-            var matcher = Global.Configuration.Items.Where(x => x.Name == request.Item.UrlName).ToArray();
+            // Is the user account in a state that we want? (Ingame, Offline, Online)
+            if (!Global.Configuration.User.UserStates.Contains(request.User.Status))
+            {
+                return false;
+            }
+
+            //Do we have any enabled?
+            var matcher = Global.Configuration.Items.Where(x => x.Enabled).ToArray();
+            if (!matcher.Any())
+            {
+                return false;
+            }
+
+            // Do we have a matching item? (Check the name) 
+            matcher = matcher.Where(x => x.Name == request.Item.UrlName).ToArray();
             if (!matcher.Any())
             {
                 return false;
@@ -178,13 +199,6 @@ namespace WFTDC
                 return false;
             }
 
-            // Is the user account in a state that we want? (Ingame, Offline, Online)
-            matcher = matcher.Where(x => x.UserStates.Contains(request.User.Status)).ToArray();
-            if (!matcher.Any())
-            {
-                return false;
-            }
-
             // Is this the sort of item that has ranks? If so, we need to compare ranks
             if (request.ModRank.HasValue)
             {
@@ -204,11 +218,7 @@ namespace WFTDC
             _ws.Close();
             NotificationManager.Notifier.Dispose();
             _notifierIcon.Dispose();
-        }
-
-        private void CleanExit(object sender, RoutedEventArgs e)
-        {
-            Close();
+            Application.Exit();
         }
     }
 }

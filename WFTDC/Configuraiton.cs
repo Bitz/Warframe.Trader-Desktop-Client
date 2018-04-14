@@ -20,6 +20,9 @@
             [J("Name")]
             public string Name { get; set; }
 
+            [J("UrlName")]
+            public string UrlName { get; set; }
+
             [J("QuantityMin")]
             public int QuantityMin { get; set; }
 
@@ -38,8 +41,9 @@
             [J("Price")]
             public int Price { get; set; }
 
-            [J("UserStates")]
-            public List<Status> UserStates { get; set; }
+            [J("Enabled")]
+            public bool Enabled { get; set; }
+
         }
 
         public class User
@@ -55,6 +59,9 @@
 
             [J("Region")]
             public Region Region { get; set; }
+
+            [J("UserStates")]
+            public List<Status> UserStates { get; set; }
         }
 
         public class Account

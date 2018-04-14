@@ -1,4 +1,5 @@
 ﻿using ToastNotifications.Core;
+using WFTDC.Windows.Models;
 
 namespace WFTDC
 {
@@ -19,11 +20,6 @@ namespace WFTDC
     public class NotificationManager
     {
         private static Notifier _Notifier { get; set; }
-
-        private static void CloseAction(NotificationBase obj)
-        {
-            var opts = obj.DisplayPart.GetOptions();
-        }
 
         public static Notifier Notifier
         {

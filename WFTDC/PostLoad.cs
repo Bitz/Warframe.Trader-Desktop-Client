@@ -2,7 +2,7 @@
 {
     public class PostLoad
     {
-        public Item Item { get; set; }
+        public ItemBody Item { get; set; }
 
         public long Quantity { get; set; }
 
@@ -16,6 +16,8 @@
 
         public class UserAccount
         {
+            public string ID { get; set; }
+
             public string Name { get; set; }
 
             public Status Status { get; set; }
@@ -23,6 +25,13 @@
             public Platform Platform { get; set; }
 
             public Region Region { get; set; }
+        }
+
+        public class ItemBody
+        {
+            public string Name { get; set; }
+
+            public string UrlName { get; set; }
         }
     }
 }

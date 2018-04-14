@@ -1,7 +1,8 @@
-﻿namespace WFTDC
-{
-    using ToastNotifications.Core;
+﻿using System.IO;
+using ToastNotifications.Core;
 
+namespace WFTDC.Windows.Models
+{
     public class ItemNotification : NotificationBase
     {
         private CustomDisplayPart _displayPart;
@@ -10,22 +11,10 @@
         public ItemNotification(PostLoad postLoad)
         {
             PostLoad = postLoad;
-            IconUrl = "https://warframe.market/static/assets/";
 
-            if (!string.IsNullOrEmpty(_postLoad.Item.SubIcon))
-            {
-                IconUrl += _postLoad.Item.SubIcon;
-            }
-            else if (!string.IsNullOrEmpty(_postLoad.Item.Icon))
-            {
-                IconUrl += _postLoad.Item.Icon;
-            }
-            else
-            {
-                IconUrl += "user/default-avatar.png";
-            }
+            OnlineIconUrl = Path.Combine(Functions.PathToTemp(), Path.GetFileName(FNA.GetFilePair(postLoad.Item.UrlName).FileName));
 
-            FullName = _postLoad.Item.Name.ItemName;
+            FullName = _postLoad.Item.Name;
 
             Quantity += $"[{postLoad.Quantity}]";
 
@@ -74,7 +63,7 @@
             set => _postLoad = value;
         }
 
-        public string IconUrl { get; set; }
+        public string OnlineIconUrl { get; set; }
 
         public string FullName { get; set; }
 
