@@ -43,7 +43,7 @@ namespace WFTDC
             var mExit = new MenuItem("Exit");
             mExit.Click += (sender, args) => Close();
             _menu.MenuItems.Add(mExit);
-            _notifierIcon.Icon = Properties.Resources.TrayIcon;
+            _notifierIcon.Icon = Properties.Resources.wftlogo;
             _notifierIcon.MouseClick += Notifier_MouseClick;
             _notifierIcon.MouseDoubleClick += Notifier_MouseDoubleClick;
             _notifierIcon.Visible = true;
