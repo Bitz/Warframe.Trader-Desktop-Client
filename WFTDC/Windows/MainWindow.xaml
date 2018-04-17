@@ -59,7 +59,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn>
+                    <GridViewColumn Width="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -72,10 +72,10 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="14"/>
+                                    <TextBlock Cursor="Hand" MouseUp="GoToItemPage"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name}" Foreground="#265663" VerticalAlignment="Center" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="14"/>
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold"  VerticalAlignment="Top" Padding="0 0 4 0" Text="Rank"/>
-                                    <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Top" Text="{Binding Rank}"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="0"  VerticalAlignment="Top" Padding="0 0 4 0" Text="RANK"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="1"  VerticalAlignment="Top" Text="{Binding Rank}" FontWeight="UltraLight"/>
                                 </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

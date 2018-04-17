@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using WFTDC.Items;
-
-namespace WFTDC
+﻿namespace WFTDC
 {
     using System.Windows.Media;
+    using System.IO;
 
     public class Constants
     {
@@ -25,12 +22,7 @@ namespace WFTDC
 
         public static string WtbBackground { get; }
 
-        public static List<Items.En> ItemDatabase {
-            get { return _ItemDatabase ?? (_ItemDatabase = Functions.Data.GetItemsDatabase()); }
-            set { _ItemDatabase = value; }
-        }
 
-        private static List<Items.En> _ItemDatabase { get; set; }
 
         public static FNA.Model FillNameDatabase
         {

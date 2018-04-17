@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -21,30 +22,28 @@ namespace WFTDC.Windows
     public partial class AddItemWindow
     {
         readonly AddItem _data = new AddItem();
-        readonly List<En> _listOfItems;
+        List<En> _listOfItems;
         FNA.FilePair _selectedItem;
         private readonly C.Item _importedConfig;
 
         public AddItemWindow()
         {
-            _listOfItems = Constants.ItemDatabase;
+            AlwaysLoad();
+        }
+
+        private void AlwaysLoad()
+        {
+            _listOfItems = Functions.Data.GetItemsDatabase();
             DataContext = _data;
             InitializeComponent();
             CB_BuySellSelector.SelectedIndex = 0;
             CB_QuantityType.SelectedIndex = 0;
-
             PopulateWithDefaults();
         }
 
         public AddItemWindow(GridItem item)
         {
-            _listOfItems = Constants.ItemDatabase;
-            DataContext = _data;
-            InitializeComponent();
-            CB_BuySellSelector.SelectedIndex = 0;
-            CB_QuantityType.SelectedIndex = 0;
-
-            PopulateWithDefaults();
+            AlwaysLoad();
 
             _importedConfig = item.Configitem;
 
@@ -74,7 +73,7 @@ namespace WFTDC.Windows
             if (item.Configitem.QuantityMin == 0 && item.Configitem.QuantityMax == 999)
             {
                 CB_QuantityType.SelectedIndex = 0; //ANY
-            } 
+            }
             else if (item.Configitem.QuantityMin != 0 && item.Configitem.QuantityMax == 999)
             {
                 CB_QuantityType.SelectedIndex = 1; //At least
@@ -109,26 +108,23 @@ namespace WFTDC.Windows
         {
             if (!string.IsNullOrWhiteSpace(ItemTextbox.Text))
             {
-                int maxDisplay = 5;
-                int currentDisplay = 0;
-                foreach (var item in _listOfItems)
+                if (ItemTextbox.Text.Length > 1)
                 {
-                    if (item.Name.ToLowerInvariant().Contains(ItemTextbox.Text.ToLowerInvariant()))
+                    int maxDisplay = 6;
+                    foreach (var item in _listOfItems.OrderBy(x => Utils.LevenshteinDistance(x.Name, ItemTextbox.Text)))
                     {
-                        if (_data.ItemList.All(w => w != item))
+                        if (item.Name.ToLowerInvariant().Contains(ItemTextbox.Text.ToLowerInvariant()))
                         {
-                            if (currentDisplay < maxDisplay)
+                            if (_data.ItemList.All(w => w != item) && _data.ItemList.Count < maxDisplay)
                             {
                                 _data.ItemList.Add(item);
-                                currentDisplay++;
                             }
                         }
+                        else
+                        {
+                            _data.ItemList.Remove(item);
+                        }
                     }
-                    else
-                    {
-                        _data.ItemList.Remove(item);
-                    }
-                    
                 }
             }
             else
@@ -136,14 +132,27 @@ namespace WFTDC.Windows
                 _data.ItemList.Clear();
                 PopulateWithDefaults();
             }
+
+            if (_data.ItemList.Count > 0)
+            {
+                ItemTextbox.IsDropDownOpen = true;
+            }
         }
+
+        private void ItemTextbox_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(e.Text))
+            {
+            }
+        }
+
 
         private void ItemTextbox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cb = sender as ComboBox;
             if (cb != null)
             {
-                var thisSelection = cb.SelectedItem as En;
+                En thisSelection = cb.SelectedItem as En;
                 if (thisSelection != null)
                 {
                     BackgroundWorker bw = new BackgroundWorker
@@ -151,10 +160,7 @@ namespace WFTDC.Windows
                         WorkerReportsProgress = true
                     };
 
-                    bw.DoWork += delegate
-                    {
-                        _selectedItem = FNA.GetFilePair(thisSelection.UrlName);
-                    };
+                    bw.DoWork += delegate { _selectedItem = FNA.GetFilePair(thisSelection.UrlName); };
                     bw.RunWorkerAsync();
 
                     bw.RunWorkerCompleted += (o, args) =>
@@ -168,7 +174,8 @@ namespace WFTDC.Windows
                             HideRankSelector();
                         }
                         Image_Item.MouseUp -= ClickImage;
-                        Image_Item.Source = new BitmapImage(new Uri(Path.Combine(Functions.PathToTemp(), Path.GetFileName(_selectedItem.FileName))));
+                        Image_Item.Source = new BitmapImage(new Uri(Path.Combine(Functions.PathToTemp(),
+                            Path.GetFileName(_selectedItem.FileName))));
                         Image_Item.MouseUp += ClickImage;
                     };
                 }
@@ -177,7 +184,7 @@ namespace WFTDC.Windows
 
         private void ClickImage(object sender, MouseButtonEventArgs e)
         {
-             Process.Start($"https://warframe.market/items/{_selectedItem.UrlName}");
+            Process.Start($"https://warframe.market/items/{_selectedItem.UrlName}");
         }
 
 
@@ -185,7 +192,6 @@ namespace WFTDC.Windows
         {
             Ranked_Selector.Visibility = Visibility.Collapsed;
             Ranked_Text.Visibility = Visibility.Collapsed;
-
         }
 
         private void ShowRankSelector()
@@ -209,7 +215,7 @@ namespace WFTDC.Windows
         {
             if (e.DataObject.GetDataPresent(typeof(String)))
             {
-                String text = (String)e.DataObject.GetData(typeof(String));
+                String text = (String) e.DataObject.GetData(typeof(String));
                 if (!IsTextAllowed(text)) e.CancelCommand();
             }
             else e.CancelCommand();
@@ -234,7 +240,7 @@ namespace WFTDC.Windows
             string thisSelection = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
             Quantity_Selector_Between.Visibility = Visibility.Collapsed;
             Quantity_Selector_Single.Visibility = Visibility.Collapsed;
-            
+
             switch (thisSelection)
             {
                 case "Any":
@@ -333,6 +339,5 @@ namespace WFTDC.Windows
             stackPanel.Children.Add(b);
             await DialogHost.Show(stackPanel);
         }
-
     }
 }

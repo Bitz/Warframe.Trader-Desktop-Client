@@ -27,7 +27,6 @@ namespace WFTDC.Windows.Models
         private string _orderForeground;
         private string _orderBackground;
         private bool _enabled;
-        private int _index;
         private string _image;
         private string _name;
         private string _rank;
@@ -70,12 +69,6 @@ namespace WFTDC.Windows.Models
         {
             get { return _enabled; }
             set { _enabled = value; OnPropertyChanged(); }
-        }
-
-        public int Index
-        {
-            get { return _index; }
-            set { _index = value; OnPropertyChanged(); }
         }
 
         public string Image

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -50,8 +49,8 @@ namespace WFTDC.Windows
             _notifierIcon.Visible = true;
             _notifierIcon.ContextMenu = _menu;
 
-            //Global.WebSocket = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
-            Global.WebSocket = new WebSocket("ws://127.0.0.1:2489") { Origin = "user://" + Global.Configuration.User.Id };
+            Global.WebSocket = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
+            //Global.WebSocket = new WebSocket("ws://127.0.0.1:2489") { Origin = "user://" + Global.Configuration.User.Id };
             Global.WebSocket.OnMessage += ReceiveMessage;
             Global.WebSocket.OnClose += WsOnOnClose;
             Global.WebSocket.Connect();
@@ -80,18 +79,12 @@ namespace WFTDC.Windows
 
         private void WsOnOnClose(object sender, CloseEventArgs closeEventArgs)
         {
-            if (!closeEventArgs.WasClean)
+            if (!closeEventArgs.WasClean && !Global.WebSocket.IsAlive && aTimer == null)
             {
-                if (!Global.WebSocket.IsAlive)
-                {
-                    if (aTimer == null)
-                    {
-                        aTimer = new System.Timers.Timer(10000) { Enabled = true };
-                        aTimer.Elapsed += Retryconnection;
-                        aTimer.Start();
-                        NotificationManager.Notifier.ShowWarning("Connection lost with server, retrying...");
-                    }
-                }
+                aTimer = new System.Timers.Timer(10000) { Enabled = true };
+                aTimer.Elapsed += Retryconnection;
+                aTimer.Start();
+                NotificationManager.Notifier.ShowWarning("Connection lost with server, retrying...");
             }
         }
 
@@ -149,9 +142,14 @@ namespace WFTDC.Windows
             }
         }
 
+        private MainWindow window;
         private void ShowConfigWindow()
         {
-            MainWindow window = new MainWindow();
+            if (window == null)
+            {
+                window = new MainWindow();
+                window.Closed += (a, b) => window = null;
+            }
             window.Show();
             window.Activate();
         }
@@ -167,7 +165,7 @@ namespace WFTDC.Windows
             }
             else
             {
-               NotificationManager.Notifier.ShowItem(request);
+               //NotificationManager.Notifier.ShowItem(request);
             }
         }
         
@@ -239,6 +237,10 @@ namespace WFTDC.Windows
 
         public void OnWindowClosing(object sender, CancelEventArgs cancelEventArgs)
         {
+            if (window != null)
+            {
+                window.Close();
+            }
             Global.WebSocket.Close();
             NotificationManager.Notifier.Dispose();
             _notifierIcon.Dispose();

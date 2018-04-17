@@ -42,8 +42,8 @@
                 <ComboBoxItem>Selling</ComboBoxItem>
                 <ComboBoxItem>Buying</ComboBoxItem>
             </ComboBox>
-            <Image Grid.Column="0" Grid.Row="2" Name="Image_Item" RenderOptions.BitmapScalingMode="Fant" Margin="4" Cursor="Hand" MaxHeight="100"/>
-            <ComboBox materialDesign:HintAssist.Hint="Select item..." SelectionChanged="ItemTextbox_OnSelectionChanged" DisplayMemberPath="Name" Name="ItemTextbox" HorizontalAlignment="Center" KeyUp="Search_ForItem_MouseUp" Width="250" Grid.Column="0" Grid.Row="3" ItemsSource="{Binding Path=ItemList}" IsEditable="True" IsTextSearchCaseSensitive="False" IsTextSearchEnabled="True">
+            <Image Grid.Column="0" Grid.Row="2" Name="Image_Item" RenderOptions.BitmapScalingMode="Fant" Margin="4" Cursor="Hand" Height="100"/>
+            <ComboBox StaysOpenOnEdit="True" PreviewTextInput="ItemTextbox_OnPreviewTextInput" materialDesign:HintAssist.Hint="Select item..." SelectionChanged="ItemTextbox_OnSelectionChanged" DisplayMemberPath="Name" Name="ItemTextbox" HorizontalAlignment="Center" KeyUp="Search_ForItem_MouseUp" Width="250" Grid.Column="0" Grid.Row="3" ItemsSource="{Binding Path=ItemList}" IsEditable="True" IsTextSearchCaseSensitive="False" IsTextSearchEnabled="True">
             <ComboBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel></VirtualizingStackPanel>

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using WFTDC.Items;
+using System.Windows.Input;
 using WFTDC.Windows.Models;
 
 namespace WFTDC.Windows
@@ -19,6 +18,7 @@ namespace WFTDC.Windows
         public MainWindow()
         {
             InitializeComponent();
+            
             MaxHeight = Utils.GetWorkableScreenHeight() * 1.1;
             DataContext = _config;
             ReloadData();
@@ -27,13 +27,13 @@ namespace WFTDC.Windows
         private void ReloadData()
         {
             _config.ContentList.Clear();
-            for (var index = 0; index < Global.Configuration.Items.Count; index++)
+            foreach (C.Item item in Global.Configuration.Items)
             {
-                _config.ContentList.Add(LoadFromConfiguration(Global.Configuration.Items[index], index));
+                _config.ContentList.Add(LoadFromConfiguration(item));
             }
         }
 
-        private GridItem LoadFromConfiguration(C.Item i, int index)
+        private GridItem LoadFromConfiguration(C.Item i)
         {
             var g = new GridItem
             {
@@ -41,7 +41,6 @@ namespace WFTDC.Windows
                 Price = i.Price,
                 Type = i.Type,
                 Enabled = i.Enabled,
-                Index = index,
                 Image = Path.Combine(Functions.PathToTemp(), Path.GetFileName(FNA.GetFilePair(i.UrlName).FileName))
             };
 
@@ -115,7 +114,7 @@ namespace WFTDC.Windows
             MenuItem item = (MenuItem) sender;
             var gridView = (GridItem) item.DataContext;
             IsEnabled = false;
-            window = new AddItemWindow(gridView);
+            var window = new AddItemWindow(gridView);
             window.Closing += (o, args) =>
             {
                 ReloadData();
@@ -139,7 +138,7 @@ namespace WFTDC.Windows
         private void AddWatcher_Click(object sender, RoutedEventArgs e)
         {
             IsEnabled = false;
-            var window = new AddItemWindow {Owner = this};
+            AddItemWindow window = new AddItemWindow {Owner = this};
             window.Closing += (o, args) =>
             {
                 ReloadData();
@@ -160,6 +159,13 @@ namespace WFTDC.Windows
         {
             //Dispose of ui related things being stored in memory.
             System.GC.Collect();
+        }
+
+        private void GoToItemPage(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock item = (TextBlock) sender;
+            var gridView = (GridItem)item.DataContext;
+            Process.Start($"https://warframe.market/items/{gridView.Configitem.UrlName}");
         }
     }
 }

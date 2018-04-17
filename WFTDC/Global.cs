@@ -2,7 +2,7 @@
 
 namespace WFTDC
 {
-    public class Global
+    public static class Global
     {
         public static WebSocket WebSocket;
         public static C.Configuration Configuration

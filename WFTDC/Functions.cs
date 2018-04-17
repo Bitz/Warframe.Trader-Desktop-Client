@@ -22,6 +22,18 @@ namespace WFTDC
         {
             public static C.Configuration Load()
             {
+                FileInfo configFile = new FileInfo(PathToConfig());
+                if (!configFile.Exists || configFile.Length == 0)
+                {
+                    var defaultConfig = new DefaultConfig().Config;
+                    var settings = new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        Formatting = Formatting.Indented
+                    };
+                    string defaultConfigText = JsonConvert.SerializeObject(defaultConfig, settings);
+                    File.WriteAllText(PathToConfig(), defaultConfigText);
+                }
                 string configBody = File.ReadAllText(PathToConfig());
                 C.Configuration config = JsonConvert.DeserializeObject<C.Configuration>(configBody);
                 return config;
@@ -36,7 +48,7 @@ namespace WFTDC
                 };
                 string configBody = JsonConvert.SerializeObject(Global.Configuration, settings);
                 File.WriteAllText(PathToConfig(), configBody);
-                if (Global.WebSocket.IsAlive)
+                if (Global.WebSocket != null && Global.WebSocket.IsAlive)
                 {
                     Global.WebSocket.SendWatchList();
                 }
