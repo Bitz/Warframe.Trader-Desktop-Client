@@ -32,7 +32,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid Margin="4" Grid.Row="0" Grid.Column="0">
-                <Image Grid.Row="0" Grid.Column="0" Source="{Binding OnlineIconUrl}" Height="60" RenderOptions.BitmapScalingMode="Fant"></Image>
+                <Image Grid.Row="0" Grid.Column="0" Source="{Binding OnlineIconUrl}" Height="60" RenderOptions.BitmapScalingMode="Fant" Name="Image" Cursor="Hand"/>
             </Grid>
             <Grid Grid.Row="1" Grid.Column="0">
                 <TextBlock Name="WtTextBlock" Foreground="{Binding OfferForeground}"  Background="{Binding OfferBackground}" TextAlignment="Center" FontWeight="Bold" Margin="0"  VerticalAlignment="Center" FontSize="12"/>

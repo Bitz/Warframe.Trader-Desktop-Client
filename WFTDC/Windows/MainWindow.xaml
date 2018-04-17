@@ -11,6 +11,7 @@
         mc:Ignorable="d"
         ResizeMode="NoResize"
         DataContext="{Binding ElementName=_config}"
+        Closing="MainWindow_OnClosing"
         Title="Configure Settings" Height="420" Width="200" MinHeight="350" MinWidth="440">
     <Grid>
         <Grid.ColumnDefinitions>

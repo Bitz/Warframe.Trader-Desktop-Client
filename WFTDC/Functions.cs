@@ -36,6 +36,10 @@ namespace WFTDC
                 };
                 string configBody = JsonConvert.SerializeObject(Global.Configuration, settings);
                 File.WriteAllText(PathToConfig(), configBody);
+                if (Global.WebSocket.IsAlive)
+                {
+                    Global.WebSocket.SendWatchList();
+                }
             }
 
             private static string PathToConfig()

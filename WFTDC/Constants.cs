@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using WFTDC.Items;
 
 namespace WFTDC
 {
     using System.Windows.Media;
 
-    public static class Constants
+    public class Constants
     {
         static Constants()
         {
@@ -21,7 +22,7 @@ namespace WFTDC
 
             ApplicationPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         }
-        
+
         public static string WtbBackground { get; }
 
         public static List<Items.En> ItemDatabase {

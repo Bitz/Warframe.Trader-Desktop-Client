@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using ToastNotifications.Messages;
@@ -16,15 +18,14 @@ namespace WFTDC.Windows
     /// </summary>
     public partial class TrayIcon
     {
-        private readonly WebSocket _ws;
         private readonly NotifyIcon _notifierIcon = new NotifyIcon();
         private readonly ContextMenu _menu;
         private Timer _singleClickTimer;
+        private static System.Timers.Timer aTimer;
 
         public TrayIcon()
         {
             InitializeComponent();
-
             _menu = new ContextMenu();
             var mConfigure = new MenuItem("Configure");
             _menu.MenuItems.Add(mConfigure);
@@ -46,10 +47,13 @@ namespace WFTDC.Windows
             _notifierIcon.Visible = true;
             _notifierIcon.ContextMenu = _menu;
 
-            _ws = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
-            _ws.OnMessage += ReceiveMessage;
-            _ws.OnClose += WsOnOnClose;
-            _ws.Connect();
+            //Global.WebSocket = new WebSocket("ws://ws.bitz.rocks") { Origin = "user://" + Global.Configuration.User.Id };
+            Global.WebSocket = new WebSocket("ws://127.0.0.1:2489") { Origin = "user://" + Global.Configuration.User.Id };
+            Global.WebSocket.OnMessage += ReceiveMessage;
+            Global.WebSocket.OnClose += WsOnOnClose;
+            Global.WebSocket.Connect();
+            Thread.Sleep(1000);
+            Global.WebSocket.SendWatchList();
             ////if (Global.Configuration.User.Account.Enabled && string.IsNullOrEmpty(Global.Configuration.User.Account.Cookie))
             ////{
             ////    string cookie = string.Empty;
@@ -75,13 +79,29 @@ namespace WFTDC.Windows
         {
             if (!closeEventArgs.WasClean)
             {
-                if (!_ws.IsAlive)
+                if (!Global.WebSocket.IsAlive)
                 {
-                    Thread.Sleep(10000);
-                    _ws.Connect();
+                    if (aTimer == null)
+                    {
+                        aTimer = new System.Timers.Timer(10000) { Enabled = true };
+                        aTimer.Elapsed += Retryconnection;
+                        aTimer.Start();
+                        NotificationManager.Notifier.ShowWarning("Connection lost with server, retrying...");
+                    }
                 }
             }
         }
+
+        private void Retryconnection(object sender, ElapsedEventArgs e)
+        {
+            Global.WebSocket.Connect();
+            if (Global.WebSocket.IsAlive)
+            {
+                aTimer.Stop(); NotificationManager.Notifier.ShowSuccess("Connection established!");
+                aTimer = null;
+            }
+        }
+
 
         private void Notifier_MouseClick(object sender, MouseEventArgs e)
         {
@@ -104,17 +124,17 @@ namespace WFTDC.Windows
 
         private void PauseToggle()
         {
-            if (_ws.IsAlive)
+            if (Global.WebSocket.IsAlive)
             {
-                _ws.Close();
+                Global.WebSocket.Close();
             }
             else
             {
-                _ws.Connect();
+                Global.WebSocket.Connect();
             }
 
-            NotificationManager.Notifier.ShowInformation(_ws.IsAlive ? "Trade is now unpaused." : "Trader is now paused.");
-            _menu.MenuItems[1].Text = _ws.IsAlive ? "Pause" : "Resume";
+            NotificationManager.Notifier.ShowInformation(Global.WebSocket.IsAlive ? "Trade is now unpaused." : "Trader is now paused.");
+            _menu.MenuItems[1].Text = Global.WebSocket.IsAlive ? "Pause" : "Resume";
         }
 
         private void Notifier_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -144,7 +164,7 @@ namespace WFTDC.Windows
             }
             else
             {
-                //NotificationManager.Notifier.ShowItem(request);
+               NotificationManager.Notifier.ShowItem(request);
             }
         }
         
@@ -170,7 +190,7 @@ namespace WFTDC.Windows
             }
 
             // Do we have a matching item? (Check the name) 
-            matcher = matcher.Where(x => x.Name == request.Item.UrlName).ToArray();
+            matcher = matcher.Where(x => x.UrlName == request.Item.UrlName).ToArray();
             if (!matcher.Any())
             {
                 return false;
@@ -216,7 +236,7 @@ namespace WFTDC.Windows
 
         public void OnWindowClosing(object sender, CancelEventArgs cancelEventArgs)
         {
-            _ws.Close();
+            Global.WebSocket.Close();
             NotificationManager.Notifier.Dispose();
             _notifierIcon.Dispose();
             Application.Exit();

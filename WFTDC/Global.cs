@@ -1,7 +1,10 @@
-﻿namespace WFTDC
+﻿using WebSocketSharp;
+
+namespace WFTDC
 {
     public class Global
     {
+        public static WebSocket WebSocket;
         public static C.Configuration Configuration
         {
             get

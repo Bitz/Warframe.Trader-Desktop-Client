@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using MaterialDesignThemes.Wpf;
 using WFTDC.Items;
 using WFTDC.Windows.Models;
@@ -20,6 +23,7 @@ namespace WFTDC.Windows
         readonly AddItem _data = new AddItem();
         readonly List<En> _listOfItems;
         FNA.FilePair _selectedItem;
+        private readonly C.Item _importedConfig;
 
         public AddItemWindow()
         {
@@ -30,6 +34,63 @@ namespace WFTDC.Windows
             CB_QuantityType.SelectedIndex = 0;
 
             PopulateWithDefaults();
+        }
+
+        public AddItemWindow(GridItem item)
+        {
+            _listOfItems = Constants.ItemDatabase;
+            DataContext = _data;
+            InitializeComponent();
+            CB_BuySellSelector.SelectedIndex = 0;
+            CB_QuantityType.SelectedIndex = 0;
+
+            PopulateWithDefaults();
+
+            _importedConfig = item.Configitem;
+
+            LoadFromConfig(item);
+        }
+
+        private void LoadFromConfig(GridItem item)
+        {
+            //Buy/Sell
+            CB_BuySellSelector.SelectedIndex = item.Type == OrderType.Buy ? 1 : 0;
+
+            //Item name and rank selector visibility
+            En itemName = _listOfItems.FirstOrDefault(c => c.UrlName == item.Configitem.UrlName);
+            ItemTextbox.SelectedItem = itemName;
+
+            //Ranks
+            if (item.Configitem.ModRankMin.HasValue && item.Configitem.ModRankMax.HasValue)
+            {
+                Text_RankMin.Text = item.Configitem.ModRankMin.Value.ToString();
+                Text_RankMax.Text = item.Configitem.ModRankMax.Value.ToString();
+            }
+
+            //Price
+            Text_Price.Text = item.Configitem.Price.ToString();
+
+            //Quantity Type
+            if (item.Configitem.QuantityMin == 0 && item.Configitem.QuantityMax == 999)
+            {
+                CB_QuantityType.SelectedIndex = 0; //ANY
+            } 
+            else if (item.Configitem.QuantityMin != 0 && item.Configitem.QuantityMax == 999)
+            {
+                CB_QuantityType.SelectedIndex = 1; //At least
+                Quantity_Selector_Single.Text = item.Configitem.QuantityMin.ToString();
+            }
+            else if (item.Configitem.QuantityMin == 0 && item.Configitem.QuantityMax != 999)
+            {
+                CB_QuantityType.SelectedIndex = 2; //At most
+                Quantity_Selector_Single.Text = item.Configitem.QuantityMax.ToString();
+            }
+            else
+            {
+                CB_QuantityType.SelectedIndex = 3; //Between\
+                Text_QuantityMin.Text = item.Configitem.QuantityMin.ToString();
+                Text_QuantityMax.Text = item.Configitem.QuantityMax.ToString();
+            }
         }
 
         private void PopulateWithDefaults()
@@ -106,10 +167,19 @@ namespace WFTDC.Windows
                         {
                             HideRankSelector();
                         }
+                        Image_Item.MouseUp -= ClickImage;
+                        Image_Item.Source = new BitmapImage(new Uri(Path.Combine(Functions.PathToTemp(), Path.GetFileName(_selectedItem.FileName))));
+                        Image_Item.MouseUp += ClickImage;
                     };
                 }
             }
         }
+
+        private void ClickImage(object sender, MouseButtonEventArgs e)
+        {
+             Process.Start($"https://warframe.market/items/{_selectedItem.UrlName}");
+        }
+
 
         private void HideRankSelector()
         {
@@ -122,7 +192,6 @@ namespace WFTDC.Windows
         {
             Ranked_Text.Visibility = Visibility.Visible;
             Ranked_Selector.Visibility = Visibility.Visible;
-
         }
 
         private static bool IsTextAllowed(string text)
@@ -180,8 +249,6 @@ namespace WFTDC.Windows
                     Quantity_Selector_Between.Visibility = Visibility.Visible;
                     break;
             }
-
-
         }
 
         private void TrySave_Click(object sender, RoutedEventArgs e)
@@ -230,8 +297,16 @@ namespace WFTDC.Windows
                     itemBody.Type = OrderType.Sell;
                     break;
             }
-
-            Global.Configuration.Items.Add(itemBody);
+            if (_importedConfig != null)
+            {
+                int index = Global.Configuration.Items.IndexOf(_importedConfig);
+                if (index != -1)
+                    Global.Configuration.Items[index] = itemBody;
+            }
+            else
+            {
+                Global.Configuration.Items.Add(itemBody);
+            }
             Functions.Config.Save();
             Close();
         }

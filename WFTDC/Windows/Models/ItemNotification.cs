@@ -16,6 +16,8 @@ namespace WFTDC.Windows.Models
 
             FullName = _postLoad.Item.Name;
 
+            UrlName = _postLoad.Item.UrlName;
+
             Quantity += $"[{postLoad.Quantity}]";
 
             OfferText = $"{postLoad.Platinum} Platinum";
@@ -53,6 +55,8 @@ namespace WFTDC.Windows.Models
                     break;
             }
         }
+
+        public string UrlName { get; set; }
 
         public override NotificationDisplayPart DisplayPart =>
             _displayPart ?? (_displayPart = new CustomDisplayPart(this));

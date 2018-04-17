@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using WFTDC.Items;
 using WFTDC.Windows.Models;
 
 namespace WFTDC.Windows
@@ -110,9 +112,19 @@ namespace WFTDC.Windows
 
         private void Edit_OnClick(object sender, RoutedEventArgs e)
         {
-            //MenuItem item = (MenuItem) sender;
-            //var gridView = (GridItem) item.DataContext;
-            MessageBox.Show("Coming Soon", "TODO", MessageBoxButton.OK, MessageBoxImage.Information);
+            MenuItem item = (MenuItem) sender;
+            var gridView = (GridItem) item.DataContext;
+            IsEnabled = false;
+            window = new AddItemWindow(gridView);
+            window.Closing += (o, args) =>
+            {
+                ReloadData();
+                IsEnabled = true;
+            };
+            window.Owner = this;
+            window.ShowDialog();
+            window.Activate();
+            window.Focus();
         }
 
         private void Delete_OnClick(object sender, RoutedEventArgs e)
@@ -134,6 +146,7 @@ namespace WFTDC.Windows
                 ReloadData();
                 IsEnabled = true;
             };
+            window.Owner = this;
             window.ShowDialog();
             window.Activate();
             window.Focus();
@@ -142,6 +155,12 @@ namespace WFTDC.Windows
         private void Account_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Coming Soon", "TODO", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            //Dispose of ui related things being stored in memory.
+            System.GC.Collect();
         }
     }
 }

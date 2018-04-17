@@ -16,6 +16,12 @@ namespace WFTDC.Windows
             DataContext = itemNotification; // this allows to bind ui with data in notification
             InitializeComponent();
             WtTextBlock.Text = itemNotification.PostLoad.Type == OrderType.Buy ? "WTB" : "WTS";
+            Image.MouseUp += ClickImage;
+        }
+
+        private void ClickImage(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start($"https://warframe.market/items/{_itemNotification.UrlName}");
         }
 
         protected override void OnMouseEnter(MouseEventArgs e)
