@@ -52,7 +52,7 @@ namespace WFTDC.Windows
             }
             else if (i.QuantityMin != 0 && i.QuantityMax == 999)
             {
-                g.Quantity = $"≥ {i.QuantityMax}";
+                g.Quantity = $"≥ {i.QuantityMin}";
             }
             else if (i.QuantityMin == 0 && i.QuantityMax == 999)
             {
@@ -104,9 +104,9 @@ namespace WFTDC.Windows
 
         private void LvItemsList_OnSelected(object sender, SelectionChangedEventArgs e)
         {
-            if (lvItemsList.SelectedIndex != -1)
+            if (LvItemsList.SelectedIndex != -1)
             {
-                lvItemsList.SelectedIndex = -1;
+                LvItemsList.SelectedIndex = -1;
             }
         }
 
@@ -135,12 +135,11 @@ namespace WFTDC.Windows
             Global.Configuration.Items.Remove(gridView.Configitem);
             Functions.Config.Save();
         }
-
-        private AddItemWindow window;
+        
         private void AddWatcher_Click(object sender, RoutedEventArgs e)
         {
             IsEnabled = false;
-            window = new AddItemWindow();
+            var window = new AddItemWindow {Owner = this};
             window.Closing += (o, args) =>
             {
                 ReloadData();

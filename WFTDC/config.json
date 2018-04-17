@@ -1,30 +1,21 @@
 ﻿{
   "User": {
-    "UserStates": [ 0, 2 ],
-    "Platform": 0,
-    "Region": 0,
     "Id": "3ea37a85-a3f8-4dc6-8027-71faad0d1d47",
     "Account": {
       "Enabled": true,
-      "SetStatus": 0,
+      "SetStatus": "0",
       "Cookie": "",
       "GetCookieFrom": 1
-    }
+    },
+    "Platform": 0,
+    "Region": 0,
+    "UserStates": [
+      0,
+      2
+    ]
   },
   "Items": [
     {
-      "Enabled": true, 
-      "Name": "Anasa Ayatan Sculpture",
-      "UrlName": "anasa_ayatan_sculpture",
-      "QuantityMin": 1,
-      "QuantityMax": 5,
-      "ModRankMin": 4,
-      "ModRankMax": 4,
-      "Type": 1,
-      "Price": 14
-    },
-    {
-      "Enabled": true,
       "Name": "Orta Ayatan Sculpture",
       "UrlName": "orta_ayatan_sculpture",
       "QuantityMin": 0,
@@ -32,7 +23,111 @@
       "ModRankMin": 4,
       "ModRankMax": 4,
       "Type": 1,
-      "Price": 10
+      "Price": 10,
+      "Enabled": true
+    },
+    {
+      "Name": "Vaya Ayatan Sculpture",
+      "UrlName": "vaya_ayatan_sculpture",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "ModRankMin": 4,
+      "ModRankMax": 4,
+      "Type": 1,
+      "Price": 5,
+      "Enabled": true
+    },
+    {
+      "Name": "Anasa Ayatan Sculpture",
+      "UrlName": "anasa_ayatan_sculpture",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "ModRankMin": 4,
+      "ModRankMax": 4,
+      "Type": 1,
+      "Price": 15,
+      "Enabled": true
+    },
+    {
+      "Name": "Vaykor Hek",
+      "UrlName": "vaykor_hek",
+      "QuantityMin": 1,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 34,
+      "Enabled": true
+    },
+    {
+      "Name": "Vaykor Sydon",
+      "UrlName": "vaykor_sydon",
+      "QuantityMin": 1,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 29,
+      "Enabled": true
+    },
+    {
+      "Name": "Vaykor Marelok",
+      "UrlName": "vaykor_marelok",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 34,
+      "Enabled": true
+    },
+    {
+      "Name": "Synoid Gammacor",
+      "UrlName": "synoid_gammacor",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 39,
+      "Enabled": true
+    },
+    {
+      "Name": "Synoid Simulor",
+      "UrlName": "synoid_simulor",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 49,
+      "Enabled": true
+    },
+    {
+      "Name": "Synoid Heliocor",
+      "UrlName": "synoid_heliocor",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 49,
+      "Enabled": true
+    },
+    {
+      "Name": "Telos Akbolto",
+      "UrlName": "telos_akbolto",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 30,
+      "Enabled": true
+    },
+    {
+      "Name": "Telos Boltace",
+      "UrlName": "telos_boltace",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 40,
+      "Enabled": true
+    },
+    {
+      "Name": "Telos Boltor",
+      "UrlName": "telos_boltor",
+      "QuantityMin": 0,
+      "QuantityMax": 999,
+      "Type": 1,
+      "Price": 45,
+      "Enabled": true
     }
   ]
 }

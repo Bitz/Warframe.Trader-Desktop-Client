@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
@@ -26,6 +27,9 @@ namespace WFTDC.Windows
         public TrayIcon()
         {
             InitializeComponent();
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             _menu = new ContextMenu();
             var mConfigure = new MenuItem("Configure");
             _menu.MenuItems.Add(mConfigure);
@@ -40,8 +44,7 @@ namespace WFTDC.Windows
             var mExit = new MenuItem("Exit");
             mExit.Click += (sender, args) => Close();
             _menu.MenuItems.Add(mExit);
-
-            _notifierIcon.Icon = Properties.Resources.TrayIcon;
+            _notifierIcon.Icon = Properties.Resources.wftlogo;
             _notifierIcon.MouseClick += Notifier_MouseClick;
             _notifierIcon.MouseDoubleClick += Notifier_MouseDoubleClick;
             _notifierIcon.Visible = true;

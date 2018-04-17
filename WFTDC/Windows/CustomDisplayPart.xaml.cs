@@ -46,8 +46,9 @@ namespace WFTDC.Windows
 
         private void AddMessageToClipboard_OnClick(object sender, RoutedEventArgs e)
         {
+            string type = _itemNotification.PostLoad.Type == OrderType.Sell ? "buy" : "sell";
             string message =
-                $"/w {_itemNotification.PostLoad.User.Name} Hi! I want to {_itemNotification.PostLoad.Type.ToString().ToLower()}: {_itemNotification.PostLoad.Item.Name} for {_itemNotification.PostLoad.Platinum} :platinum:. (Warframe.Market Desktop Client)";
+                $"/w {_itemNotification.PostLoad.User.Name} Hi! I want to {type}: {_itemNotification.PostLoad.Item.Name} for {_itemNotification.PostLoad.Platinum} :platinum:. (Warframe.Market Desktop Client)";
             Clipboard.SetText(message);
             if (DataContext is INotification dc) dc.Close();
         }
