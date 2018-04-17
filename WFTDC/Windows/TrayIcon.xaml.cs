@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -25,6 +26,8 @@ namespace WFTDC.Windows
         {
             InitializeComponent();
 
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             _menu = new ContextMenu();
             var mConfigure = new MenuItem("Configure");
             _menu.MenuItems.Add(mConfigure);
@@ -169,7 +172,7 @@ namespace WFTDC.Windows
             }
 
             // Do we have a matching item? (Check the name) 
-            matcher = matcher.Where(x => x.Name == request.Item.UrlName).ToArray();
+            matcher = matcher.Where(x => x.UrlName == request.Item.UrlName).ToArray();
             if (!matcher.Any())
             {
                 return false;

@@ -20,7 +20,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListView DataContext="{Binding ContentList}" ItemsSource="{Binding}" Margin="0 -16 0 0" Grid.Row="1" Grid.Column="0" Background="White" Name="lvItemsList" SelectionChanged="LvItemsList_OnSelected" >
+        <ListView DataContext="{Binding ContentList}" ItemsSource="{Binding}" Margin="0 -17 0 0" Grid.Row="1" Grid.Column="0" Background="White" Name="LvItemsList" SelectionChanged="LvItemsList_OnSelected" >
             <ListView.Resources>
                 <Style TargetType="{x:Type GridViewColumnHeader}">
                     <Setter Property="Visibility" Value="Hidden" />
@@ -49,11 +49,11 @@
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn>
-                        <GridViewColumn.CellTemplate >
+                        <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel>
-                                    <Image Source="{Binding Image}" Height="72" RenderOptions.BitmapScalingMode="Fant" Margin="4"/>
-                                    <TextBlock Text="{Binding OrderText}" Background="{Binding OrderBackground}" Foreground="{Binding OrderForeground}" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4" Margin="0 -23 0 0 "/>
+                                <StackPanel VerticalAlignment="Center" MinWidth="84">
+                                    <Image Source="{Binding Image}" Height="72" MaxWidth="76" RenderOptions.BitmapScalingMode="Fant" Margin="4" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding OrderText}" Background="{Binding OrderBackground}" Foreground="{Binding OrderForeground}" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="4" Margin="0 -22 0 0 "/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

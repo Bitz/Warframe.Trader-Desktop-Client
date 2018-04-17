@@ -9,7 +9,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         Foreground="#265663"
         mc:Ignorable="d"
-        Title="Add/Edit Item Offer Watcher" Height="430" Width="430" SizeToContent="WidthAndHeight"
+        Title="Add/Edit Item Offer Watcher" Height="430" MinWidth="350" SizeToContent="WidthAndHeight"
         ResizeMode="NoResize" WindowStyle="ToolWindow"
         ShowInTaskbar="False"
         FontSize="20" d:DataContext="{d:DesignInstance models:AddItem, IsDesignTimeCreatable=False}"
@@ -84,7 +84,7 @@
             <TextBlock Grid.Column="1" Grid.Row="0" TextAlignment="Center" VerticalAlignment="Center"> and </TextBlock>
             <TextBox Grid.Column="2" Grid.Row="0" Name="Text_QuantityMax" TextAlignment="Center" PreviewTextInput="PreviewTextInput" MaxLength="2"  AllowDrop="True" DataObject.Pasting="PastingHandler"/>
         </Grid>
-        <Grid Grid.Column="0" Grid.Row="10" Margin="0 10 0 0">
+        <Grid Grid.Column="0" Grid.Row="10" Margin="4 8 4 4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -93,9 +93,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
-                <Button Grid.Column="0" Grid.Row="0" Width="72" Style="{StaticResource MaterialDesignFlatButton}" Click="CancelButton_Click">Cancel</Button>
-                <Button Grid.Column="1" Grid.Row="0" Width="72" Style="{StaticResource MaterialDesignFlatButton}" Click="ClearButton_Click">Clear</Button>
-            <Button Grid.Column="2" Grid.Row="0" Width="120" Click="TrySave_Click">Save</Button>
+                <Button Grid.Column="0" Grid.Row="0" Width="80" Style="{StaticResource MaterialDesignFlatButton}" Click="CancelButton_Click">Cancel</Button>
+                <Button Grid.Column="1" Grid.Row="0" Width="80" Style="{StaticResource MaterialDesignFlatButton}" Click="ClearButton_Click">Clear</Button>
+            <Button Grid.Column="2" Grid.Row="0" Width="104" Click="TrySave_Click">Save</Button>
         </Grid>
     </Grid>
     </materialDesign:DialogHost>

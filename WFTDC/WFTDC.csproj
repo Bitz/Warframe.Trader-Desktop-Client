@@ -184,9 +184,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\B.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\wftlogo.ico" />
   </ItemGroup>
   <ItemGroup>
