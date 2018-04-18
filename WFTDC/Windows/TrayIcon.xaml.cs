@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using Newtonsoft.Json;
 using ToastNotifications.Messages;
 using WebSocketSharp;
@@ -53,9 +55,12 @@ namespace WFTDC.Windows
             //Global.WebSocket = new WebSocket("ws://127.0.0.1:2489") { Origin = "user://" + Global.Configuration.User.Id };
             Global.WebSocket.OnMessage += ReceiveMessage;
             Global.WebSocket.OnClose += WsOnOnClose;
+            Global.WebSocket.Compression = CompressionMethod.Deflate;
             Global.WebSocket.Connect();
-            Thread.Sleep(1000);
-            Global.WebSocket.SendWatchList();
+            BackgroundWorker bw = new BackgroundWorker();
+
+            bw.DoWork += delegate { Global.WebSocket.SendWatchList(); };
+            bw.RunWorkerAsync();
             ////if (Global.Configuration.User.Account.Enabled && string.IsNullOrEmpty(Global.Configuration.User.Account.Cookie))
             ////{
             ////    string cookie = string.Empty;
@@ -91,9 +96,10 @@ namespace WFTDC.Windows
         private void Retryconnection(object sender, ElapsedEventArgs e)
         {
             Global.WebSocket.Connect();
-            if (Global.WebSocket.IsAlive)
+            if (Global.WebSocket.ReadyState == WebSocketState.Open)
             {
-                aTimer.Stop(); NotificationManager.Notifier.ShowSuccess("Connection established!");
+                aTimer.Stop();
+                NotificationManager.Notifier.ShowSuccess("Connection established!");
                 aTimer = null;
             }
         }
