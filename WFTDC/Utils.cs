@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace WFTDC
 {
@@ -169,6 +170,61 @@ namespace WFTDC
                 }
             }
             return distance[currentRow, m];
+        }
+
+
+        public static void StartWithWindows()
+        {
+            string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            rkApp.SetValue("WarframeMarketDesktopClient", executable);
+        }
+
+
+        public static void DoNotStartWithWindows()
+        {
+            RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            rkApp.DeleteValue("WarframeMarketDesktopClient", false);
+        }
+
+        public static bool IsStartUpEnabled()
+        {
+            string executable = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            if (rkApp.GetValue("WarframeMarketDesktopClient") == null)
+            {
+                return false;
+            }
+            if (string.IsNullOrEmpty(rkApp.GetValue("WarframeMarketDesktopClient").ToString()))
+            {
+                return false;
+            }
+            if (rkApp.GetValue("WarframeMarketDesktopClient").ToString() != executable)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
+
+        public static string SetWebsocketStatusString(Payloads.Status status)
+        {
+            string statusString = @"{{""type"": ""@WS/USER/SET_STATUS"", ""payload"": ""{0}""}}";
+            switch (status)
+            {
+                case Payloads.Status.Ingame:
+                    statusString = string.Format(statusString, "ingame");
+                        break;
+                case Payloads.Status.Online:
+                    statusString = string.Format(statusString, "online");
+                    break;
+                case Payloads.Status.Offline:
+                    statusString = string.Format(statusString, "offline");
+                    break;
+            }
+            return statusString;
         }
     }
 }

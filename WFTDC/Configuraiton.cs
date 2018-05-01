@@ -8,6 +8,9 @@
     {
         public class Configuration
         {
+            [J("Application")]
+            public Application Application { get; set; }
+
             [J("User")]
             public User User { get; set; }
 
@@ -36,7 +39,7 @@
             public int? ModRankMax { get; set; }
 
             [J("Type")]
-            public OrderType Type { get; set; }
+            public Payloads.OrderType Type { get; set; }
 
             [J("Price")]
             public int Price { get; set; }
@@ -55,29 +58,42 @@
             public Account Account { get; set; }
 
             [J("Platform")]
-            public Platform Platform { get; set; }
+            public Payloads.Platform Platform { get; set; }
 
             [J("Region")]
-            public Region Region { get; set; }
+            public Payloads.Region Region { get; set; }
 
             [J("UserStates")]
-            public List<Status> UserStates { get; set; }
+            public List<Payloads.Status> UserStates { get; set; }
+        }
+
+        public class Application
+        {
+            [J("StartWithWindows")]
+            public bool StartWithWindows { get; set; }
+
+            [J("Watcher")]
+            public bool Watcher { get; set; }
         }
 
         public class Account
         {
             public enum GetCookieFromEnum
             {
-                ManualEntry,
                 Chrome,
-                InternetExplorer
+                Firefox,
+                InternetExplorer,
+                ManualEntry
             }
 
-            [J("Enabled")]
-            public bool Enabled { get; set; }
+            [J("GetMessages")]
+            public bool GetMessages { get; set; }
+
+            [J("Username")]
+            public string Username { get; set; }
 
             [J("SetStatus")]
-            public string SetStatus { get; set; }
+            public bool SetStatus { get; set; }
 
             [J("Cookie")]
             public string Cookie { get; set; }

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace WFTDC.Windows.Models
 {
-    public class ConfigPage 
+    public class WatcherConfigPage 
     {
         private ObservableCollection<GridItem> _contentList;
 
@@ -14,7 +14,7 @@ namespace WFTDC.Windows.Models
             set { _contentList = value; }
         }
 
-        public ConfigPage()
+        public WatcherConfigPage()
         {
             _contentList = new ObservableCollection<GridItem>();
         }
@@ -22,7 +22,7 @@ namespace WFTDC.Windows.Models
 
     public class GridItem : INotifyPropertyChanged
     {
-        private OrderType _type;
+        private Payloads.OrderType _type;
         private string _orderText;
         private string _orderForeground;
         private string _orderBackground;
@@ -41,7 +41,7 @@ namespace WFTDC.Windows.Models
             set { _configItem = value; OnPropertyChanged(); }
         }
 
-        public OrderType Type
+        public Payloads.OrderType Type
         {
             get { return _type; }
             set { _type = value; OnPropertyChanged(); }

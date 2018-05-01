@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -9,10 +8,12 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MaterialDesignThemes.Wpf;
 using WFTDC.Items;
 using WFTDC.Windows.Models;
+using WFTDC.Payloads;
 
 namespace WFTDC.Windows
 {
@@ -99,7 +100,10 @@ namespace WFTDC.Windows
                 var item = _listOfItems.FirstOrDefault(c => c.UrlName == configurationItem.UrlName);
                 if (item != null)
                 {
-                    _data.ItemList.Add(item);
+                    if (_data.ItemList.All(x => x.UrlName != item.UrlName))
+                    {
+                        _data.ItemList.Add(item);
+                    }
                 }
             }
         }
@@ -149,10 +153,10 @@ namespace WFTDC.Windows
 
         private void ItemTextbox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox cb = sender as ComboBox;
+            ComboBox cb = (ComboBox) sender;
             if (cb != null)
             {
-                En thisSelection = cb.SelectedItem as En;
+                var thisSelection = (En) cb.SelectedItem;
                 if (thisSelection != null)
                 {
                     BackgroundWorker bw = new BackgroundWorker
@@ -257,64 +261,146 @@ namespace WFTDC.Windows
             }
         }
 
-        private void TrySave_Click(object sender, RoutedEventArgs e)
+        private async void TrySave_Click(object sender, RoutedEventArgs e)
         {
-            C.Item itemBody = new C.Item
+            List<string> issues = new List<string>();
+            if (ItemTextbox.SelectedIndex == -1)
             {
-                UrlName = _selectedItem.UrlName,
-                Name = ItemTextbox.Text,
-                Price = int.Parse(Text_Price.Text),
-                Enabled = true
-            };
-
-            if (_selectedItem.ItemHasRanks)
-            {
-                itemBody.ModRankMin = int.Parse(Text_RankMin.Text);
-                itemBody.ModRankMax = int.Parse(Text_RankMax.Text);
+                issues.Add("Select an item.");
             }
+            if (_selectedItem != null && _selectedItem.ItemHasRanks)
+            {
+                if (string.IsNullOrEmpty(Text_RankMin.Text))
+                {
+                    issues.Add("Include a minimum rank you would like to search for.");
+                }
 
+                if (string.IsNullOrEmpty(Text_RankMax.Text))
+                {
+                    issues.Add("Include a maximum rank you would like to search for.");
+                }
+            }
+            if (string.IsNullOrEmpty(Text_Price.Text))
+            {
+                issues.Add("Include a price.");
+            }
             switch ((CB_QuantityType.SelectedItem as ComboBoxItem).Content.ToString())
             {
                 case "Any":
-                    itemBody.QuantityMin = 0;
-                    itemBody.QuantityMax = 999;
                     break;
                 case "At least":
-                    itemBody.QuantityMin = int.Parse(Quantity_Selector_Single.Text);
-                    itemBody.QuantityMax = 999;
+                    if (string.IsNullOrEmpty(Quantity_Selector_Single.Text))
+                    {
+                        issues.Add("Include a minimum quantity to search for.");
+                    }
                     break;
                 case "At most":
-                    itemBody.QuantityMin = 0;
-                    itemBody.QuantityMax = int.Parse(Quantity_Selector_Single.Text);
+                    if (string.IsNullOrEmpty(Quantity_Selector_Single.Text))
+                    {
+                        issues.Add("Include a maximum quantity to search for.");
+                    }
                     break;
                 case "Between":
-                    itemBody.QuantityMin = int.Parse(Text_QuantityMin.Text);
-                    itemBody.QuantityMax = int.Parse(Text_QuantityMax.Text);
+                    if (string.IsNullOrEmpty(Quantity_Selector_Single.Text))
+                    {
+                        issues.Add("Include a maximum quantity to search for.");
+                    }
+                    if (string.IsNullOrEmpty(Quantity_Selector_Single.Text))
+                    {
+                        issues.Add("Include a minimum quantity to search for.");
+                    }
                     break;
             }
 
+            if (issues.Count != 0)
+            {
+                StackPanel stackPanel = new StackPanel {Margin = new Thickness(4, 4, 4, 4)};
 
-            switch ((CB_BuySellSelector.SelectedItem as ComboBoxItem).Content.ToString())
-            {
-                case "Buying":
-                    itemBody.Type = OrderType.Buy;
-                    break;
-                case "Selling":
-                    itemBody.Type = OrderType.Sell;
-                    break;
-            }
-            if (_importedConfig != null)
-            {
-                int index = Global.Configuration.Items.IndexOf(_importedConfig);
-                if (index != -1)
-                    Global.Configuration.Items[index] = itemBody;
+                Button b = new Button
+                {
+                    Command = DialogHost.CloseDialogCommand,
+                    Content = "Close"
+                };
+                TextBlock te = new TextBlock
+                {
+                    Text = "Please fix the following issues:",
+                    Padding = new Thickness(20, 20, 20, 10),
+                    FontWeight = FontWeights.Bold,
+                    Foreground = Brushes.IndianRed
+                };
+                stackPanel.Children.Add(te);
+                foreach (var issue in issues)
+                {
+                    TextBlock t = new TextBlock
+                    {
+                        Text = issue,
+                        Padding = new Thickness(20, 10, 20, 10)
+                    };
+                    stackPanel.Children.Add(t);
+                }
+
+                stackPanel.Children.Add(b);
+                await DialogHost.Show(stackPanel);
             }
             else
             {
-                Global.Configuration.Items.Add(itemBody);
+                C.Item itemBody = new C.Item
+                {
+                    UrlName = _selectedItem.UrlName,
+                    Name = ItemTextbox.Text,
+                    Price = int.Parse(Text_Price.Text),
+                    Enabled = true
+                };
+
+                if (_selectedItem.ItemHasRanks)
+                {
+                    itemBody.ModRankMin = int.Parse(Text_RankMin.Text);
+                    itemBody.ModRankMax = int.Parse(Text_RankMax.Text);
+                }
+
+                switch ((CB_QuantityType.SelectedItem as ComboBoxItem).Content.ToString())
+                {
+                    case "Any":
+                        itemBody.QuantityMin = 0;
+                        itemBody.QuantityMax = 999;
+                        break;
+                    case "At least":
+                        itemBody.QuantityMin = int.Parse(Quantity_Selector_Single.Text);
+                        itemBody.QuantityMax = 999;
+                        break;
+                    case "At most":
+                        itemBody.QuantityMin = 0;
+                        itemBody.QuantityMax = int.Parse(Quantity_Selector_Single.Text);
+                        break;
+                    case "Between":
+                        itemBody.QuantityMin = int.Parse(Text_QuantityMin.Text);
+                        itemBody.QuantityMax = int.Parse(Text_QuantityMax.Text);
+                        break;
+                }
+
+
+                switch ((CB_BuySellSelector.SelectedItem as ComboBoxItem).Content.ToString())
+                {
+                    case "Buying":
+                        itemBody.Type = OrderType.Buy;
+                        break;
+                    case "Selling":
+                        itemBody.Type = OrderType.Sell;
+                        break;
+                }
+                if (_importedConfig != null)
+                {
+                    int index = Global.Configuration.Items.IndexOf(_importedConfig);
+                    if (index != -1)
+                        Global.Configuration.Items[index] = itemBody;
+                }
+                else
+                {
+                    Global.Configuration.Items.Add(itemBody);
+                }
+                Functions.Config.Save();
+                Close();
             }
-            Functions.Config.Save();
-            Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -322,22 +408,20 @@ namespace WFTDC.Windows
             Close();
         }
 
-        private async void ClearButton_Click(object sender, RoutedEventArgs e)
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            StackPanel stackPanel = new StackPanel {Margin = new Thickness(4, 4, 4, 4)};
-            TextBlock t = new TextBlock
-            {
-                Text = "AAAAAAAAAA",
-                Padding = new Thickness(20, 20, 20, 20)
-            };
-            Button b = new Button
-            {
-                Command = DialogHost.CloseDialogCommand,
-                Content = "Close"
-            };
-            stackPanel.Children.Add(t);
-            stackPanel.Children.Add(b);
-            await DialogHost.Show(stackPanel);
+            CB_BuySellSelector.SelectedIndex = 0;
+            ItemTextbox.SelectedIndex = -1;
+            Text_Price.Text = string.Empty;
+            CB_QuantityType.SelectedIndex = 0;
+            Quantity_Selector_Single.Text = string.Empty;
+            Text_QuantityMin.Text = string.Empty;
+            Text_QuantityMax.Text = string.Empty;
+            Text_RankMax.Text = string.Empty;
+            Text_RankMin.Text = string.Empty;
+            Image_Item.MouseUp -= ClickImage;
+            Image_Item.Source = new BitmapImage();
+
         }
     }
 }

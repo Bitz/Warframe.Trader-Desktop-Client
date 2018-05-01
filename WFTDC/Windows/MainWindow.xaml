@@ -10,7 +10,7 @@
         Foreground="#265663"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        DataContext="{Binding ElementName=_config}"
+        DataContext="{Binding ElementName=_watcherConfig}"
         Closing="MainWindow_OnClosing"
         Title="Configure Settings" Height="420" Width="200" MinHeight="350" MinWidth="440">
     <Grid>
@@ -129,11 +129,6 @@
             <MenuItem Header="Add Watcher" Click="AddWatcher_Click">
                 <MenuItem.Icon>
                     <materialDesign:PackIcon Kind="Plus" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="Account" Click="Account_Click">
-                <MenuItem.Icon>
-                    <materialDesign:PackIcon Kind="AccountSettingsVariant" />
                 </MenuItem.Icon>
             </MenuItem>
         </Menu>

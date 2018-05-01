@@ -46,6 +46,9 @@
     <Reference Include="Costura, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.2.0.0\lib\net452\Costura.dll</HintPath>
     </Reference>
+    <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -103,11 +106,22 @@
     <Compile Include="DefaultConfig.cs" />
     <Compile Include="FileNameAssociation.cs" />
     <Compile Include="ItemDatabase.cs" />
+    <Compile Include="Payloads\ChatPayload.cs" />
+    <Compile Include="Payloads\Shared.cs" />
+    <Compile Include="Payloads\WebsocketChat.cs" />
     <Compile Include="Windows\AddItemWindow.xaml.cs">
       <DependentUpon>AddItemWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Config.xaml.cs">
+      <DependentUpon>Config.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ChatNotification.xaml.cs">
+      <DependentUpon>ChatNotification.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Models\AddItem.cs" />
-    <Compile Include="Windows\Models\ConfigPage.cs" />
+    <Compile Include="Windows\Models\Config.cs" />
+    <Compile Include="Windows\Models\ChatNotification.cs" />
+    <Compile Include="Windows\Models\WatcherConfigPage.cs" />
     <Compile Include="Configuraiton.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Cookie.cs" />
@@ -115,12 +129,12 @@
     <Compile Include="Functions.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Windows\Models\ItemNotification.cs" />
-    <Compile Include="Windows\CustomDisplayPart.xaml.cs">
-      <DependentUpon>CustomDisplayPart.xaml</DependentUpon>
+    <Compile Include="Windows\ItemNotification.xaml.cs">
+      <DependentUpon>ItemNotification.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ItemPayload.cs" />
+    <Compile Include="Payloads\ItemPayload.cs" />
     <Compile Include="NotificationManager.cs" />
-    <Compile Include="Payload.cs" />
+    <Compile Include="Payloads\MostRecentPayload.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -134,6 +148,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Config.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ChatNotification.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -146,7 +168,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\CustomDisplayPart.xaml">
+    <Page Include="Windows\ItemNotification.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

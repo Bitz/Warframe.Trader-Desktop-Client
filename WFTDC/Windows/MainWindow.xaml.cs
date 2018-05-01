@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WFTDC.Windows.Models;
+using WFTDC.Payloads;
 
 namespace WFTDC.Windows
 {
@@ -13,23 +14,23 @@ namespace WFTDC.Windows
     /// </summary>
     public partial class MainWindow
     {
-        private readonly ConfigPage _config = new ConfigPage();
+        private readonly WatcherConfigPage _watcherConfig = new WatcherConfigPage();
 
         public MainWindow()
         {
             InitializeComponent();
             
             MaxHeight = Utils.GetWorkableScreenHeight() * 1.1;
-            DataContext = _config;
+            DataContext = _watcherConfig;
             ReloadData();
         }
 
         private void ReloadData()
         {
-            _config.ContentList.Clear();
+            _watcherConfig.ContentList.Clear();
             foreach (C.Item item in Global.Configuration.Items)
             {
-                _config.ContentList.Add(LoadFromConfiguration(item));
+                _watcherConfig.ContentList.Add(LoadFromConfiguration(item));
             }
         }
 
@@ -130,7 +131,7 @@ namespace WFTDC.Windows
         {
             MenuItem item = (MenuItem)sender;
             var gridView = (GridItem)item.DataContext;
-            _config.ContentList.Remove(gridView);
+            _watcherConfig.ContentList.Remove(gridView);
             Global.Configuration.Items.Remove(gridView.Configitem);
             Functions.Config.Save();
         }
@@ -148,11 +149,6 @@ namespace WFTDC.Windows
             window.ShowDialog();
             window.Activate();
             window.Focus();
-        }
-
-        private void Account_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Coming Soon", "TODO", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)

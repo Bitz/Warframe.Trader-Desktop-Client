@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using ToastNotifications.Core;
 using WFTDC.Windows.Models;
+using WFTDC.Payloads;
 
 namespace WFTDC.Windows
 {

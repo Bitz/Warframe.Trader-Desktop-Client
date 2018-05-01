@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using ToastNotifications.Core;
+using WFTDC.Payloads;
 
 namespace WFTDC.Windows.Models
 {

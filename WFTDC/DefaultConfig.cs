@@ -15,23 +15,28 @@ namespace WFTDC
                 {
                     Cookie = string.Empty,
                     GetCookieFrom = C.Account.GetCookieFromEnum.Chrome,
-                    Enabled = false,
-                    SetStatus = string.Empty
+                    GetMessages = false,
+                    SetStatus = false
                 },
                 Id = Guid.NewGuid().ToString(),
-                Platform = Platform.Pc,
-                Region = Region.En,
-                UserStates = new List<Status>
+                Platform = Payloads.Platform.Pc,
+                Region = Payloads.Region.En,
+                UserStates = new List<Payloads.Status>
                 {
-                    Status.Ingame,
-                    Status.Online
+                    Payloads.Status.Ingame,
+                    Payloads.Status.Online
                 }
             };
 
             Config = new C.Configuration
             {
                 User = User,
-                Items = new List<C.Item>()
+                Items = new List<C.Item>(),
+                Application = new C.Application
+                {
+                    StartWithWindows = true,
+                    Watcher = true
+                }
             };
         }
     }

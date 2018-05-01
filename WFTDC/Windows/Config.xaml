@@ -1,0 +1,96 @@
+﻿<Window x:Class="WFTDC.Windows.Config"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:models="clr-namespace:WFTDC.Windows.Models"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance models:Config, IsDesignTimeCreatable=False}"
+        Title="Configuration" Height="402" Width="300" ResizeMode="NoResize" SizeToContent="Height" Foreground="#265663" FontSize="12" >
+
+    <dragablz:TabablzControl FixedHeaderCount="2" >
+        <TabItem IsSelected="True" >
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Settings" Foreground="White" Margin="0 0 8 0"/>
+                    <TextBlock Foreground="White">Application</TextBlock>
+                </StackPanel>
+            </TabItem.Header>
+            <StackPanel Margin="0 10 0 0" HorizontalAlignment="Center" MinWidth="300">
+                <CheckBox Name="Check_startWithWindows" Click="Check_startWithWindows_OnClick" HorizontalAlignment="Center"  Padding="20 8">
+                    Start Application with Windows
+                </CheckBox>
+
+                <CheckBox Name="Check_ToggleWatcher" Click="Check_toggleWatchers_OnClick" HorizontalAlignment="Center"  Padding="20 8">
+                    Enable Watchers *
+                </CheckBox>
+
+                <TextBlock Margin="0 8 0 8" TextAlignment="Center" FontWeight="Bold" TextWrapping="Wrap">* - Restart required.</TextBlock>
+            </StackPanel>
+        </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="AccountSettingsVariant" Foreground="White" Margin="0 0 8 0"/>
+                    <TextBlock Foreground="White">Account</TextBlock>
+                </StackPanel>
+            </TabItem.Header>
+            <StackPanel HorizontalAlignment="Center" Margin="0 12 0 0">
+                <TextBlock Margin="0 0 0 12" TextAlignment="Center">Grab Warframe.Market User Account From...</TextBlock>
+                <ListBox  Margin="0 0 0 12" Style="{StaticResource MaterialDesignToolToggleListBox}" HorizontalAlignment="Center" Name="LB_AccountMode" SelectionChanged="LB_AccountMode_OnSelectionChanged">
+                    <ListBoxItem ToolTip="Google Chrome">
+                    <materialDesign:PackIcon Kind="GoogleChrome" />
+                    </ListBoxItem>
+                    <ListBoxItem ToolTip="Firefox">
+                        <materialDesign:PackIcon Kind="Firefox" />
+                    </ListBoxItem>
+                    <ListBoxItem ToolTip="Internet Explorer">
+                    <materialDesign:PackIcon Kind="InternetExplorer" />
+                    </ListBoxItem>
+                    <ListBoxItem ToolTip="Manual Input">
+                    <materialDesign:PackIcon Kind="Pencil" />
+                    </ListBoxItem>
+                </ListBox>
+
+                <TextBox Name="TextBox_Cookie" MaxWidth="200" materialDesign:HintAssist.Hint="Cookie" Text="{Binding Cookie}"/>
+                <Button Style="{StaticResource MaterialDesignFloatingActionButton}" Margin="0 8 0 8" Click="Grab_Account_Click"
+                        materialDesign:ButtonProgressAssist.IsIndicatorVisible="{Binding IsSaving}"
+                        materialDesign:ButtonProgressAssist.IsIndeterminate="True">
+                    <!-- simple example of toggling/animating pack icon with a data trigger-->
+                    <materialDesign:PackIcon Height="24" Width="24">
+                        <materialDesign:PackIcon.Style>
+                            <Style TargetType="materialDesign:PackIcon">
+                                <Setter Property="Kind" Value="AccountConvert" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSaveComplete}" Value="True">
+                                        <Setter Property="Kind" Value="Check" />
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.8" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </materialDesign:PackIcon.Style>
+                    </materialDesign:PackIcon>
+                </Button>
+                <TextBlock Text="{Binding AccountNameInfo}" TextAlignment="Center" Margin="0 8 0 8" FontWeight="Bold" Foreground="Green"></TextBlock>
+                <CheckBox Name="Check_matchStatus" HorizontalAlignment="Center" Padding="20 8" IsEnabled="{Binding LoggedIn}" IsChecked="{Binding setStatus}" Click="Check_matchStatus_OnClick">
+                    Set status to match Warframe
+                </CheckBox>
+                <CheckBox Name="Check_recieveMessages" HorizontalAlignment="Center" Padding="20 8" IsEnabled="{Binding LoggedIn}" IsChecked="{Binding recieveMessages}" Click="Check_recieveMessages_OnClick">
+                    Recieve Warframe.Market messages
+                </CheckBox>
+                <CheckBox Name="Check_matchOffers" HorizontalAlignment="Center" Padding="20 8" IsEnabled="False" IsChecked="False">
+                    Match my offers with other offers (SOON)
+                </CheckBox>
+                <TextBlock Margin="0 8 0 8" TextAlignment="Center" FontWeight="Bold" TextWrapping="Wrap">These changes will not take effect until application is restarted.</TextBlock>
+            </StackPanel>
+        </TabItem>
+    </dragablz:TabablzControl>
+</Window>

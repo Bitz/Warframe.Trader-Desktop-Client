@@ -7,12 +7,12 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
-        Foreground="#265663"
+        Foreground="#265663" FontSize="20" 
         mc:Ignorable="d"
-        Title="Add/Edit Item Offer Watcher" Height="430" MinWidth="350" SizeToContent="WidthAndHeight"
+        Title="Add/Edit Item Offer Watcher" Height="500" MinWidth="350" SizeToContent="WidthAndHeight"
         ResizeMode="NoResize" WindowStyle="ToolWindow"
         ShowInTaskbar="False"
-        FontSize="20" d:DataContext="{d:DesignInstance models:AddItem, IsDesignTimeCreatable=False}"
+        d:DataContext="{d:DesignInstance models:AddItem, IsDesignTimeCreatable=False}"
         WindowStartupLocation="CenterOwner"
         >
     <materialDesign:DialogHost>
