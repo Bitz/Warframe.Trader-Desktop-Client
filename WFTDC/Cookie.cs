@@ -171,7 +171,7 @@
 
         private static string GetFirefoxCookiePath()
         {
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string s = Path.Combine(appData, @"Mozilla\Firefox\Profiles\");
             DirectoryInfo directoryInWhichToSearch = new DirectoryInfo(s);
 

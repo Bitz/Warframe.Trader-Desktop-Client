@@ -1,4 +1,7 @@
-﻿namespace WFTDC.Windows
+﻿using System;
+using System.Windows.Media;
+
+namespace WFTDC.Windows
 {
     using System.ComponentModel;
     using System.Net;
@@ -27,7 +30,16 @@
             {
                 _config.LoggedIn = true;
                 _config.IsSaveComplete = true;
-                _config.AccountNameInfo = $"Signed in as {Global.Configuration.User.Account.Username}";
+                if (!string.IsNullOrEmpty(GetUsernameUsingCookie(_config.Cookie)))
+                {
+                    _config.AccountNameInfo = "Signed in!";
+                    AccountNameInfo.Foreground = Brushes.Green;
+                }
+                else
+                {
+                    AccountNameInfo.Foreground = Brushes.Black;
+                }
+
             }
             else
             {
@@ -76,12 +88,14 @@
                 _config.IsSaving = false;
                 if (!string.IsNullOrEmpty(_config.Username))
                 {
-                    _config.AccountNameInfo = $"Signed in as {_config.Username}";
+                    _config.AccountNameInfo = "Signed in!";
                     _config.IsSaveComplete = true;
+                    AccountNameInfo.Foreground = Brushes.Green;
                 }
                 else
                 {
-                    _config.AccountNameInfo = string.Empty;
+                    _config.AccountNameInfo = "Unable to sign in.";
+                    AccountNameInfo.Foreground = Brushes.DarkRed;
                 }
             };
         }
@@ -119,22 +133,36 @@
                 _config.LoggedIn = true;
                 result = true;
             }
+            else
+            {
+                _config.Username = userName;
+                _config.LoggedIn = false;
+                result = false;
+            }
+
 
             return result;
         }
 
         private string GetUsernameUsingCookie(string value)
         {
-            WebClient wc = new WebClient();
-            wc.Headers.Add(HttpRequestHeader.Cookie, $"JWT={value}");
-            var ok = wc.DownloadString("https://api.warframe.market/v1/profile");
-
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            using (WebClient wc = new WebClient())
+            {
+                wc.Headers.Add(HttpRequestHeader.Cookie, $"JWT={value}");
+                try
+                {
+                    wc.DownloadString("https://api.warframe.market/v1/im/chats");
+                    return "VAILDNAME";
+                }
+                catch (Exception)
+                {
+                    return "";
+                }
+            }
 
             //TODO Modify this method to work with actually grabbing the username- whenever kyc impliments it
-
-            return "TODO";
         }
 
         private void LB_AccountMode_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

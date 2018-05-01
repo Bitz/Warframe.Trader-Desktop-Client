@@ -226,5 +226,10 @@ namespace WFTDC
             }
             return statusString;
         }
+
+        public static void Shutdown()
+        {
+
+        }
     }
 }
