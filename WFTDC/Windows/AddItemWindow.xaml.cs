@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -149,11 +148,9 @@ namespace WFTDC.Windows
 
         private void ItemTextbox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox cb = sender as ComboBox;
-            if (cb != null)
+            if (sender is ComboBox cb)
             {
-                En thisSelection = cb.SelectedItem as En;
-                if (thisSelection != null)
+                if (cb.SelectedItem is En thisSelection)
                 {
                     BackgroundWorker bw = new BackgroundWorker
                     {
@@ -223,7 +220,7 @@ namespace WFTDC.Windows
 
         private void BuySellSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string thisSelection = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            string thisSelection = (((ComboBox) sender).SelectedItem as ComboBoxItem)?.Content as string;
             switch (thisSelection)
             {
                 case "Buying":
@@ -237,7 +234,7 @@ namespace WFTDC.Windows
 
         private void CB_QuantityType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string thisSelection = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            string thisSelection = ((ComboBoxItem) (sender as ComboBox)?.SelectedItem)?.Content as string;
             Quantity_Selector_Between.Visibility = Visibility.Collapsed;
             Quantity_Selector_Single.Visibility = Visibility.Collapsed;
 
@@ -273,7 +270,7 @@ namespace WFTDC.Windows
                 itemBody.ModRankMax = int.Parse(Text_RankMax.Text);
             }
 
-            switch ((CB_QuantityType.SelectedItem as ComboBoxItem).Content.ToString())
+            switch (((ComboBoxItem) CB_QuantityType.SelectedItem).Content.ToString())
             {
                 case "Any":
                     itemBody.QuantityMin = 0;
@@ -294,7 +291,7 @@ namespace WFTDC.Windows
             }
 
 
-            switch ((CB_BuySellSelector.SelectedItem as ComboBoxItem).Content.ToString())
+            switch (((ComboBoxItem) CB_BuySellSelector.SelectedItem).Content.ToString())
             {
                 case "Buying":
                     itemBody.Type = OrderType.Buy;
