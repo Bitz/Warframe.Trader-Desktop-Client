@@ -16,7 +16,8 @@ namespace WFTDC
                     Cookie = string.Empty,
                     GetCookieFrom = C.Account.GetCookieFromEnum.Chrome,
                     GetMessages = false,
-                    SetStatus = false
+                    SetStatus = false,
+                    Username = string.Empty
                 },
                 Id = Guid.NewGuid().ToString(),
                 Platform = Payloads.Platform.Pc,

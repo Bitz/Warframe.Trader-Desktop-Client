@@ -52,13 +52,13 @@ namespace WFTDC.Windows.Models
             set { _loggedIn = value; OnPropertyChanged(); }
         }
 
-        public bool setStatus
+        public bool SetStatus
         {
             get { return _setStatus; }
             set { _setStatus = value; OnPropertyChanged(); }
         }
 
-        public bool recieveMessages
+        public bool RecieveMessages
         {
             get { return _recieveMessages; }
             set { _recieveMessages = value; OnPropertyChanged(); }

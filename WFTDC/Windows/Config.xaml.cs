@@ -21,13 +21,17 @@
             Check_ToggleWatcher.IsChecked = Global.Configuration.Application.Watcher;
             LB_AccountMode.SelectedIndex = (int) Global.Configuration.User.Account.GetCookieFrom;
             _config.Cookie = Global.Configuration.User.Account.Cookie;
-            _config.setStatus = Global.Configuration.User.Account.SetStatus;
-            _config.recieveMessages = Global.Configuration.User.Account.GetMessages;
+            _config.SetStatus = Global.Configuration.User.Account.SetStatus;
+            _config.RecieveMessages = Global.Configuration.User.Account.GetMessages;
             if (!string.IsNullOrEmpty(Global.Configuration.User.Account.Cookie))
             {
                 _config.LoggedIn = true;
                 _config.IsSaveComplete = true;
                 _config.AccountNameInfo = $"Signed in as {Global.Configuration.User.Account.Username}";
+            }
+            else
+            {
+                _config.IsSaveComplete = false;
             }
         }
 
@@ -109,11 +113,11 @@
                 Global.Configuration.User.Account.GetCookieFrom = cookieMode;
                 Global.Configuration.User.Account.Cookie = value;
                 Global.Configuration.User.Account.Username = userName;
-                _config.Cookie = Global.Configuration.User.Account.Cookie;
-                _config.Username = Global.Configuration.User.Account.Username;
                 Functions.Config.Save();
-                result = true;
+                _config.Cookie = value;
+                _config.Username = userName;
                 _config.LoggedIn = true;
+                result = true;
             }
 
             return result;
@@ -144,13 +148,13 @@
 
         private void Check_recieveMessages_OnClick(object sender, RoutedEventArgs e)
         {
-            Global.Configuration.User.Account.GetMessages = _config.recieveMessages;
+            Global.Configuration.User.Account.GetMessages = _config.RecieveMessages;
             Functions.Config.Save();
         }
 
         private void Check_matchStatus_OnClick(object sender, RoutedEventArgs e)
         {
-            Global.Configuration.User.Account.SetStatus = _config.setStatus;
+            Global.Configuration.User.Account.SetStatus = _config.SetStatus;
             Functions.Config.Save();
         }
 

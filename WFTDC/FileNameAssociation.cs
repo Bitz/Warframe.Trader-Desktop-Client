@@ -1,9 +1,7 @@
-﻿using System.Net;
-using Newtonsoft.Json;
-using WFTDC.Payloads;
-
-namespace WFTDC
+﻿namespace WFTDC
 {
+    using System.Net;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.IO;

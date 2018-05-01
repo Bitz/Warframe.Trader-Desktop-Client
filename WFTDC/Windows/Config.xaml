@@ -80,10 +80,10 @@
                     </materialDesign:PackIcon>
                 </Button>
                 <TextBlock Text="{Binding AccountNameInfo}" TextAlignment="Center" Margin="0 8 0 8" FontWeight="Bold" Foreground="Green"></TextBlock>
-                <CheckBox Name="Check_matchStatus" HorizontalAlignment="Center" Padding="20 8" IsEnabled="{Binding LoggedIn}" IsChecked="{Binding setStatus}" Click="Check_matchStatus_OnClick">
+                <CheckBox Name="Check_matchStatus" HorizontalAlignment="Center" Padding="20 8" IsEnabled="{Binding LoggedIn}" IsChecked="{Binding SetStatus}" Click="Check_matchStatus_OnClick">
                     Set status to match Warframe
                 </CheckBox>
-                <CheckBox Name="Check_recieveMessages" HorizontalAlignment="Center" Padding="20 8" IsEnabled="{Binding LoggedIn}" IsChecked="{Binding recieveMessages}" Click="Check_recieveMessages_OnClick">
+                <CheckBox Name="Check_recieveMessages" HorizontalAlignment="Center" Padding="20 8" IsEnabled="{Binding LoggedIn}" IsChecked="{Binding RecieveMessages}" Click="Check_recieveMessages_OnClick">
                     Recieve Warframe.Market messages
                 </CheckBox>
                 <CheckBox Name="Check_matchOffers" HorizontalAlignment="Center" Padding="20 8" IsEnabled="False" IsChecked="False">
