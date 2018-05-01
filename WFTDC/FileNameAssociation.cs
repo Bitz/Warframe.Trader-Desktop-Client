@@ -1,9 +1,7 @@
-﻿using System.Net;
-using Newtonsoft.Json;
-using WFTDC.IP;
-
-namespace WFTDC
+﻿namespace WFTDC
 {
+    using System.Net;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -71,7 +69,7 @@ namespace WFTDC
                 {
                     iteminfo = c.DownloadString(url);
                 }
-                var thisItem = JsonConvert.DeserializeObject<ItemPayload>(iteminfo)
+                var thisItem = JsonConvert.DeserializeObject<Payloads.Items.ItemPayload>(iteminfo)
                     .Payload.Item.ItemsInSet.FirstOrDefault(x => x.UrlName == UrlName);
 
                 if (!String.IsNullOrEmpty(thisItem.SubIcon))

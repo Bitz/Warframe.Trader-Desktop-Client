@@ -4,7 +4,8 @@ namespace WFTDC
 {
     public static class Global
     {
-        public static WebSocket WebSocket;
+        public static WebSocket ItemWebSocket;
+        public static WebSocket WTWebsocket;
         public static C.Configuration Configuration
         {
             get

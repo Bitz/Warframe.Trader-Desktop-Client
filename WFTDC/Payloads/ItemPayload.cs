@@ -1,20 +1,23 @@
-﻿namespace WFTDC.IP
+﻿using System.Collections.Generic;
+
+namespace WFTDC.Payloads.Items
 {
-    using System.Collections.Generic;
     using J = Newtonsoft.Json.JsonPropertyAttribute;
 
     public class ItemPayload
     {
-        [J("payload")] public Payload Payload { get; set; }
+        [J("payload")] public MostRecentPayload Payload { get; set; }
     }
 
-    public class Payload
+    public class MostRecentPayload
     {
         [J("item")] public Item Item { get; set; }
     }
 
     public class Item
     {
+        [J("item_name")] public string ItemName { get; set; }
+        [J("url_name")] public string UrlName { get; set; }
         [J("_id")] public string Id { get; set; }
         [J("items_in_set")] public List<ItemsInSet> ItemsInSet { get; set; }
     }

@@ -1,10 +1,8 @@
-﻿using ToastNotifications.Core;
-using WFTDC.Windows.Models;
-
-namespace WFTDC
+﻿namespace WFTDC
 {
     using System;
-
+    using Payloads.Chat;
+    using Windows.Models;
     using ToastNotifications;
     using ToastNotifications.Lifetime;
     using ToastNotifications.Position;
@@ -14,6 +12,11 @@ namespace WFTDC
         public static void ShowItem(this Notifier notifier, PostLoad postLoad)
         {
             notifier.Notify<ItemNotification>(() => new ItemNotification(postLoad));
+        }
+
+        public static void ShowChat(this Notifier notifier, Chat chatLoad, string otherUserId)
+        {
+            notifier.Notify<ChatNotificationModel>(() => new ChatNotificationModel(chatLoad, otherUserId));
         }
     }
 
@@ -36,7 +39,7 @@ namespace WFTDC
                     _Notifier = new Notifier(cfg =>
                     {
                         cfg.PositionProvider = new PrimaryScreenPositionProvider(Corner.BottomRight, 8, offSet);
-                        cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(TimeSpan.FromSeconds(5), MaximumNotificationCount.FromCount(5));
+                        cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(TimeSpan.FromSeconds(8), MaximumNotificationCount.FromCount(1));
                         cfg.DisplayOptions.Width = 400;
                     });
                 }

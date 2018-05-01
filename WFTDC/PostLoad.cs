@@ -17,7 +17,7 @@
         public long Platinum { get; set; }
 
         [J("T")]
-        public OrderType Type { get; set; }
+        public Payloads.OrderType Type { get; set; }
 
         [J("U")]
         public UserAccount User { get; set; }
@@ -31,13 +31,13 @@
             public string Name { get; set; }
 
             [J("S")]
-            public Status Status { get; set; }
+            public Payloads.Status Status { get; set; }
 
             [J("P")]
-            public Platform Platform { get; set; }
+            public Payloads.Platform Platform { get; set; }
 
             [J("R")]
-            public Region Region { get; set; }
+            public Payloads.Region Region { get; set; }
         }
 
         public class ItemBody
