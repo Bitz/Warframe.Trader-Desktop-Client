@@ -12,29 +12,39 @@
         #region IE
         public static bool GetCookieFromInternetExplorer(string strHost, string strField, ref string value)
         {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             value = string.Empty;
             bool found = false;
 
             try
             {
                 var strPath = Environment.GetFolderPath(Environment.SpecialFolder.Cookies);
-                string[] cookieFiles = Directory.GetFiles(strPath, "*.txt", SearchOption.AllDirectories);
 
-                foreach (string path in cookieFiles)
+                if (Directory.Exists(strPath))
                 {
-                    List<string> strCookie = File.ReadAllLines(path).ToList();
+                    string[] cookieFiles = Directory.GetFiles(strPath, "*.txt", SearchOption.AllDirectories);
 
-                    if (strCookie.Any(x => x == $"{strHost}/"))
+                    foreach (string path in cookieFiles)
                     {
-                        int nameIndex = strCookie.FindIndex(x => x == strField);
-                        if (nameIndex != -1 && strCookie.Count > nameIndex)
+                        List<string> strCookie = File.ReadAllLines(path).ToList();
+
+                        if (strCookie.Any(x => x == $"{strHost}/"))
                         {
-                            value = strCookie[nameIndex + 1];
-                            found = true;
-                            break;
+                            int nameIndex = strCookie.FindIndex(x => x == strField);
+                            if (nameIndex != -1 && strCookie.Count > nameIndex)
+                            {
+                                value = strCookie[nameIndex + 1];
+                                found = true;
+                                break;
+                            }
                         }
                     }
                 }
+                else
+                {
+                    //TODO Something else for other os
+                }
+
             }
             catch (Exception) 
             {
@@ -49,6 +59,7 @@
         #region Chrome
         public static bool GetCookieFromChrome(string strHost, string strField, ref string value)
         {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             value = string.Empty;
             bool found = false;
 
@@ -110,7 +121,7 @@
             {
                 return cookieFiles.OrderByDescending(x => x.LastAccessTime)
                     .FirstOrDefault()
-                    .FullName;
+                    ?.FullName;
             }
 
             return string.Empty;
@@ -120,6 +131,7 @@
         #region FireFox
         public static bool GetCookieFromFirefox(string strHost, string strField, ref string value)
         {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             value = string.Empty;
             bool found = false;
 
@@ -141,18 +153,18 @@
                         cmd.Parameters.Add(new SQLiteParameter("@strHost", $"{strHost}"));
                         cmd.Parameters.Add(new SQLiteParameter("@strField", $"{strField}"));
 
-                        cmd.CommandText = "SELECT encrypted_value FROM moz_cookies WHERE host = @strHost AND name = @strField;";
+                        cmd.CommandText = "SELECT value FROM moz_cookies WHERE host = @strHost AND name = @strField;";
                         conn.Open();
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                var blob = (byte[])reader[0];
-                                var decodedData = System.Security.Cryptography.ProtectedData.Unprotect(
-                                    blob,
-                                    null,
-                                    System.Security.Cryptography.DataProtectionScope.CurrentUser);
-                                value = Encoding.ASCII.GetString(decodedData);
+                                //var blob = (byte[])reader[0];
+                                //var decodedData = System.Security.Cryptography.ProtectedData.Unprotect(
+                                //    blob,
+                                //    null,
+                                //    System.Security.Cryptography.DataProtectionScope.CurrentUser);
+                                value = (string) reader[0];
                                 found = true;
                                 break;
                             }
@@ -181,7 +193,7 @@
             {
                 return cookieFiles.OrderByDescending(x => x.LastAccessTime)
                     .FirstOrDefault()
-                    .FullName;
+                    ?.FullName;
             }
             return string.Empty;
         }

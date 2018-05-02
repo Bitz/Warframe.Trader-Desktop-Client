@@ -22,10 +22,10 @@ namespace WFTDC.Windows
         private readonly NotifyIcon _notifierIcon = new NotifyIcon();
         private readonly ContextMenu _menu;
         //private Timer _singleClickTimer;
-        private static System.Timers.Timer aTimer;
-        private MainWindow watcherWindow;
-        private Config configWindow;
-        private bool showedConnectionLostOnce;
+        private static System.Timers.Timer _aTimer;
+        private MainWindow _watcherWindow;
+        private Config _configWindow;
+        private bool _showedConnectionLostOnce;
 
 
         public TrayIcon()
@@ -103,26 +103,26 @@ namespace WFTDC.Windows
         #region Subwindow Management Code
         private void ShowConfigWindow()
         {
-            if (configWindow == null)
+            if (_configWindow == null)
             {
-                configWindow = new Config();
-                configWindow.Closed += (a, b) => configWindow = null;
+                _configWindow = new Config();
+                _configWindow.Closed += (a, b) => _configWindow = null;
             }
-            configWindow.Show();
-            configWindow.Activate();
+            _configWindow.Show();
+            _configWindow.Activate();
         }
 
         private void ShowWatcherConfigWindow()
         {
             if (Global.Configuration.Application.Watcher)
             {
-                if (watcherWindow == null)
+                if (_watcherWindow == null)
                 {
-                    watcherWindow = new MainWindow();
-                    watcherWindow.Closed += (a, b) => watcherWindow = null;
+                    _watcherWindow = new MainWindow();
+                    _watcherWindow.Closed += (a, b) => _watcherWindow = null;
                 }
-                watcherWindow.Show();
-                watcherWindow.Activate();
+                _watcherWindow.Show();
+                _watcherWindow.Activate();
             }
         }
         #endregion
@@ -160,13 +160,13 @@ namespace WFTDC.Windows
         public void OnWindowClosing(object sender, CancelEventArgs cancelEventArgs)
         {
             _notifierIcon.Dispose();
-            if (watcherWindow != null)
+            if (_watcherWindow != null)
             {
-                watcherWindow.Close();
+                _watcherWindow.Close();
             }
-            if (configWindow != null)
+            if (_configWindow != null)
             {
-                configWindow.Close();
+                _configWindow.Close();
             }
 
             if (Global.ItemWebSocket != null)
@@ -188,15 +188,15 @@ namespace WFTDC.Windows
         private void WsOnOnClose(object sender, CloseEventArgs closeEventArgs)
         {
             var ws = (WebSocket)sender;
-            if (!closeEventArgs.WasClean && !ws.IsAlive && aTimer == null)
+            if (!closeEventArgs.WasClean && !ws.IsAlive && _aTimer == null)
             {
-                aTimer = new System.Timers.Timer(10000) { Enabled = true };
-                aTimer.Elapsed += (o, args) => Retryconnection(ws);
-                aTimer.Start();
-                if (!showedConnectionLostOnce)
+                _aTimer = new System.Timers.Timer(10000) { Enabled = true };
+                _aTimer.Elapsed += (o, args) => Retryconnection(ws);
+                _aTimer.Start();
+                if (!_showedConnectionLostOnce)
                 {
                     NotificationManager.Notifier.ShowWarning("Connection lost with server, retrying...");
-                    showedConnectionLostOnce = true;
+                    _showedConnectionLostOnce = true;
                 }
             }
         }
@@ -210,13 +210,13 @@ namespace WFTDC.Windows
 
             if (ws.ReadyState == WebSocketState.Open)
             {
-                aTimer.Stop();
-                aTimer = null;
-                if (showedConnectionLostOnce)
+                _aTimer.Stop();
+                _aTimer = null;
+                if (_showedConnectionLostOnce)
                 {
                     NotificationManager.Notifier.ShowSuccess("Connection established!");
                 }
-                showedConnectionLostOnce = false;
+                _showedConnectionLostOnce = false;
             }
         }
         #endregion
@@ -235,12 +235,12 @@ namespace WFTDC.Windows
                 Domain = ".warframe.market"
             };
             Global.WTWebsocket.SetCookie(authCookie);
-            Global.WTWebsocket.OnMessage += ReceiveWTMessage;
+            Global.WTWebsocket.OnMessage += ReceiveWtMessage;
             Global.WTWebsocket.OnClose += WsOnOnClose;
             Global.WTWebsocket.Connect();
         }
 
-        private void ReceiveWTMessage(object sender, MessageEventArgs e)
+        private void ReceiveWtMessage(object sender, MessageEventArgs e)
         {
             Console.WriteLine(e.Data);
             if (e.Data.Contains("\"type\": \"@WS/chats/NEW_MESSAGE\""))

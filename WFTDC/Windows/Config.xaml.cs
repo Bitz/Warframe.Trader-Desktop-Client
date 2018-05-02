@@ -51,7 +51,7 @@ namespace WFTDC.Windows
         {
             CheckBox checkBox = (CheckBox) sender;
 
-            if (checkBox.IsChecked.Value)
+            if (checkBox.IsChecked != null && checkBox.IsChecked.Value)
             {
                 Utils.StartWithWindows();
             }
@@ -63,7 +63,8 @@ namespace WFTDC.Windows
             {
                 Global.Configuration.Application = new C.Application();
             }
-            Global.Configuration.Application.StartWithWindows = checkBox.IsChecked.Value;
+            if (checkBox.IsChecked != null)
+                Global.Configuration.Application.StartWithWindows = checkBox.IsChecked.Value;
             Functions.Config.Save();
         }
 
@@ -102,7 +103,7 @@ namespace WFTDC.Windows
 
         public bool GetAccount(C.Account.GetCookieFromEnum cookieMode)
         {
-            bool result = false;
+            bool result;
             string value = string.Empty;
             switch (cookieMode)
             {
@@ -110,7 +111,7 @@ namespace WFTDC.Windows
                     GetCookieFromChrome(".warframe.market", "JWT", ref value);
                     break;
                 case C.Account.GetCookieFromEnum.Firefox:
-                    GetCookieFromFirefox("warframe.market", "JWT", ref value);
+                    GetCookieFromFirefox(".warframe.market", "JWT", ref value);
                     break;
                 case C.Account.GetCookieFromEnum.InternetExplorer:
                     GetCookieFromInternetExplorer("warframe.market", "JWT", ref value);
@@ -189,7 +190,7 @@ namespace WFTDC.Windows
         private void Check_toggleWatchers_OnClick(object sender, RoutedEventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
-            Global.Configuration.Application.Watcher = checkBox.IsChecked.Value;
+            if (checkBox.IsChecked != null) Global.Configuration.Application.Watcher = checkBox.IsChecked.Value;
             Functions.Config.Save();
         }
     }
