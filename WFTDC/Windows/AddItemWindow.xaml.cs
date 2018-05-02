@@ -153,11 +153,9 @@ namespace WFTDC.Windows
 
         private void ItemTextbox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBox cb = (ComboBox) sender;
-            if (cb != null)
+            if (sender is ComboBox cb)
             {
-                var thisSelection = (En) cb.SelectedItem;
-                if (thisSelection != null)
+                if (cb.SelectedItem is En thisSelection)
                 {
                     BackgroundWorker bw = new BackgroundWorker
                     {
@@ -227,7 +225,7 @@ namespace WFTDC.Windows
 
         private void BuySellSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string thisSelection = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            string thisSelection = (((ComboBox) sender).SelectedItem as ComboBoxItem)?.Content as string;
             switch (thisSelection)
             {
                 case "Buying":
@@ -241,7 +239,7 @@ namespace WFTDC.Windows
 
         private void CB_QuantityType_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string thisSelection = ((sender as ComboBox).SelectedItem as ComboBoxItem).Content as string;
+            string thisSelection = ((ComboBoxItem) (sender as ComboBox)?.SelectedItem)?.Content as string;
             Quantity_Selector_Between.Visibility = Visibility.Collapsed;
             Quantity_Selector_Single.Visibility = Visibility.Collapsed;
 
