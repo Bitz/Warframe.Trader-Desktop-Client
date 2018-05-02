@@ -13,7 +13,6 @@
         public static bool GetCookieFromInternetExplorer(string strHost, string strField, ref string value)
         {
             value = string.Empty;
-            bool found = false;
 
             try
             {
@@ -30,8 +29,7 @@
                         if (nameIndex != -1 && strCookie.Count > nameIndex)
                         {
                             value = strCookie[nameIndex + 1];
-                            found = true;
-                            break;
+                            return true;
                         }
                     }
                 }
@@ -39,10 +37,9 @@
             catch (Exception) 
             {
                 value = string.Empty;
-                found = false;
             }
 
-            return found;
+            return false;
         }
         #endregion
 
@@ -141,18 +138,13 @@
                         cmd.Parameters.Add(new SQLiteParameter("@strHost", $"{strHost}"));
                         cmd.Parameters.Add(new SQLiteParameter("@strField", $"{strField}"));
 
-                        cmd.CommandText = "SELECT encrypted_value FROM moz_cookies WHERE host = @strHost AND name = @strField;";
+                        cmd.CommandText = "SELECT value FROM moz_cookies WHERE host = @strHost AND name = @strField;";
                         conn.Open();
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                var blob = (byte[])reader[0];
-                                var decodedData = System.Security.Cryptography.ProtectedData.Unprotect(
-                                    blob,
-                                    null,
-                                    System.Security.Cryptography.DataProtectionScope.CurrentUser);
-                                value = Encoding.ASCII.GetString(decodedData);
+                                value = reader[0].ToString();
                                 found = true;
                                 break;
                             }

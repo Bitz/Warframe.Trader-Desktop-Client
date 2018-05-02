@@ -110,11 +110,11 @@ namespace WFTDC.Windows
                     GetCookieFromChrome(".warframe.market", "JWT", ref value);
                     break;
                 case C.Account.GetCookieFromEnum.Firefox:
-                    GetCookieFromFirefox("warframe.market", "JWT", ref value);
+                    GetCookieFromFirefox(".warframe.market", "JWT", ref value);
                     break;
-                case C.Account.GetCookieFromEnum.InternetExplorer:
-                    GetCookieFromInternetExplorer("warframe.market", "JWT", ref value);
-                    break;
+                //case C.Account.GetCookieFromEnum.InternetExplorer:
+                //    GetCookieFromInternetExplorer("warframe.market", "JWT", ref value);
+                //    break;
                 case C.Account.GetCookieFromEnum.ManualEntry:
                     value = _config.Cookie;
                     break;

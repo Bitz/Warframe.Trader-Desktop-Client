@@ -82,7 +82,7 @@
             {
                 Chrome,
                 Firefox,
-                InternetExplorer,
+                //InternetExplorer,
                 ManualEntry
             }
 
