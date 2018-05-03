@@ -46,9 +46,9 @@
                     <ListBoxItem ToolTip="Firefox">
                         <materialDesign:PackIcon Kind="Firefox" />
                     </ListBoxItem>
-                    <ListBoxItem ToolTip="Internet Explorer">
+                    <!--<ListBoxItem ToolTip="Internet Explorer">
                     <materialDesign:PackIcon Kind="InternetExplorer" />
-                    </ListBoxItem>
+                    </ListBoxItem>-->
                     <ListBoxItem ToolTip="Manual Input">
                     <materialDesign:PackIcon Kind="Pencil" />
                     </ListBoxItem>

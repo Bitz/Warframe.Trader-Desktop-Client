@@ -14,7 +14,6 @@
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
             value = string.Empty;
-            bool found = false;
 
             try
             {
@@ -49,10 +48,9 @@
             catch (Exception) 
             {
                 value = string.Empty;
-                found = false;
             }
 
-            return found;
+            return false;
         }
         #endregion
 
