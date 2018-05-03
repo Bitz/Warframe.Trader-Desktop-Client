@@ -1,4 +1,4 @@
-﻿
+﻿using System.Diagnostics;
 
 namespace WFTDC.Windows
 {
@@ -6,6 +6,7 @@ namespace WFTDC.Windows
     using System.ComponentModel;
     using System.Linq;
     using System.Net;
+    using System.Management;
     using System.Windows.Forms;
     using Newtonsoft.Json;
     using ToastNotifications.Messages;
@@ -26,6 +27,9 @@ namespace WFTDC.Windows
         private MainWindow _watcherWindow;
         private Config _configWindow;
         private bool _showedConnectionLostOnce;
+
+        private ManagementEventWatcher _startWatch;
+        private ManagementEventWatcher _stopWatch;
 
 
         public TrayIcon()
@@ -65,9 +69,54 @@ namespace WFTDC.Windows
                 CreateChatWebsocket();
             }
 
+            if (Global.Configuration.User.Account.SetStatus &&
+                !string.IsNullOrEmpty(Global.Configuration.User.Account.Cookie))
+            {
+                WatchForWarframeProcess();
+            }
+
             //Only show icon when we are ready to go.
             _notifierIcon.Visible = true;
         }
+
+        private void WatchForWarframeProcess()
+        {
+            Process[] pname = Process.GetProcesses().Where(x => x.ProcessName.ToLower().Contains("warframe") && x.ProcessName != "Warframe Trader Desktop Client").ToArray();
+            if (pname.Length > 0)
+            {
+                StartWatch_EventArrived(null, null);
+            }
+            else
+            {
+                StopWatch_EventArrived(null, null);
+            }
+            _startWatch = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace WHERE ProcessName LIKE '%warframe%'"));
+            _startWatch.EventArrived += StartWatch_EventArrived;
+            _startWatch.Start();
+            _stopWatch = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStopTrace WHERE ProcessName LIKE '%warframe%'"));
+            _stopWatch.EventArrived += StopWatch_EventArrived;
+            _stopWatch.Start();
+        }
+
+        private static void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            if (Global.WTWebsocket.IsAlive)
+            {
+                Global.CurrentExpectedState = Status.Online;
+                Global.WTWebsocket.Send(Utils.SetWebsocketStatusString(Global.CurrentExpectedState.Value));
+            }
+        }
+
+        private static void StartWatch_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            if (Global.WTWebsocket.IsAlive)
+            {
+                Global.CurrentExpectedState = Status.Ingame;
+                Global.WTWebsocket.Send(Utils.SetWebsocketStatusString(Global.CurrentExpectedState.Value));
+            }
+        }
+
+
 
         private ContextMenu CreateTrayIconContextMenu()
         {
@@ -160,14 +209,8 @@ namespace WFTDC.Windows
         public void OnWindowClosing(object sender, CancelEventArgs cancelEventArgs)
         {
             _notifierIcon.Dispose();
-            if (_watcherWindow != null)
-            {
-                _watcherWindow.Close();
-            }
-            if (_configWindow != null)
-            {
-                _configWindow.Close();
-            }
+            _watcherWindow?.Close();
+            _configWindow?.Close();
 
             if (Global.ItemWebSocket != null)
             {
@@ -176,8 +219,16 @@ namespace WFTDC.Windows
 
             if (Global.WTWebsocket != null)
             {
+                if (_startWatch != null || _stopWatch != null && Global.WTWebsocket.IsAlive)
+                {
+                    Global.WTWebsocket.Send(Utils.SetWebsocketStatusString(Status.Offline));
+                    Global.CurrentExpectedState = Status.Offline;
+                }
                 Global.WTWebsocket.Close();
             }
+
+            _startWatch?.Stop();
+            _stopWatch?.Stop();
 
             NotificationManager.Notifier.Dispose();
             Application.Exit();
@@ -261,6 +312,35 @@ namespace WFTDC.Windows
                 {
                     if (chat != null) NotificationManager.Notifier.ShowChat(chat, otherUserId);
                 };
+            }
+
+            if (e.Data.Contains("\"type\": \"@WS/USER/SET_STATUS_DONE\""))
+            {
+                if (Global.Configuration.User.Account.SetStatus)
+                {
+                    Status thisStatus = Status.Offline;
+                    if (e.Data.Contains("invisible"))
+                    {
+                        thisStatus = Status.Offline;
+                    }
+                    else if (e.Data.Contains("offline"))
+                    {
+                        thisStatus = Status.Offline;
+                    }
+                    else if (e.Data.Contains("ingame"))
+                    {
+                        thisStatus = Status.Ingame;
+                    }
+                    else if (e.Data.Contains("online"))
+                    {
+                        thisStatus = Status.Online;
+                    }
+
+                    if (Global.CurrentExpectedState != null && Global.CurrentExpectedState.Value != thisStatus)
+                    {
+                        Global.WTWebsocket.Send(Utils.SetWebsocketStatusString(Global.CurrentExpectedState.Value));
+                    }
+                }
             }
         }
 

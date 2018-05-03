@@ -92,7 +92,7 @@ namespace WFTDC
                 }
                 fileContents = File.ReadAllText(PathToItemDb());
                 var itemsfromDb = JsonConvert.DeserializeObject<List>(fileContents);
-                return itemsfromDb.Payload.Items.En.OrderBy(x => x.Name).ToList();
+                return itemsfromDb.Payload.Items.En;//.OrderBy(x => x.Name).ToList();
             }
         }
     }

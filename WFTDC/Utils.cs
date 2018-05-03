@@ -223,6 +223,9 @@ namespace WFTDC
                 case Payloads.Status.Offline:
                     statusString = string.Format(statusString, "offline");
                     break;
+                case Payloads.Status.Invisible:
+                    statusString = string.Format(statusString, "invisible");
+                    break;
             }
             return statusString;
         }

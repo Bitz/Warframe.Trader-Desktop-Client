@@ -29,6 +29,8 @@
 
         Offline,
 
-        Online
+        Online,
+
+        Invisible
     };
 }

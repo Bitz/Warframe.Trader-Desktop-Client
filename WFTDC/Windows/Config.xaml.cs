@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Media;
 
 namespace WFTDC.Windows
@@ -170,7 +171,7 @@ namespace WFTDC.Windows
         {
             ListBox listBox = (ListBox) sender;
 
-            TextBox_Cookie.Visibility = listBox.SelectedIndex == 3 ? Visibility.Visible : Visibility.Collapsed;
+            TextBox_Cookie.Visibility = listBox.SelectedIndex == 2 ? Visibility.Visible : Visibility.Collapsed;
 
             _config.IsSaveComplete = LB_AccountMode.SelectedIndex == (int) Global.Configuration.User.Account.GetCookieFrom;
         }
@@ -192,6 +193,22 @@ namespace WFTDC.Windows
             CheckBox checkBox = (CheckBox)sender;
             if (checkBox.IsChecked != null) Global.Configuration.Application.Watcher = checkBox.IsChecked.Value;
             Functions.Config.Save();
+        }
+
+        private void ClearItemCache_Click(object sender, RoutedEventArgs e)
+        {
+            Button thisButton = (Button) sender;
+            Constants.FillNameDatabase = null;
+            try
+            {
+                Directory.Delete(Functions.PathToTemp(), true);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+            thisButton.IsEnabled = false;
+            thisButton.Content = "Cache Cleared";
         }
     }
 }

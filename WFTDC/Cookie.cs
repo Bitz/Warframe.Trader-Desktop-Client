@@ -33,15 +33,10 @@
                             if (nameIndex != -1 && strCookie.Count > nameIndex)
                             {
                                 value = strCookie[nameIndex + 1];
-                                found = true;
-                                break;
+                                return true;
                             }
                         }
                     }
-                }
-                else
-                {
-                    //TODO Something else for other os
                 }
 
             }
